@@ -164,57 +164,66 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 /* ===== Training session page (full screen) ===== */
 .sess-page{position:absolute;inset:0;background:var(--bg);z-index:30;display:none;flex-direction:column}
 .sess-page.show{display:flex}
-.sess-head{padding:calc(var(--safe-top) + 8px) 16px 10px;background:var(--card);border-bottom:.5px solid var(--border)}
-.sess-head .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.sess-head .back{background:transparent;border:none;color:var(--brand);font-size:15px;padding:4px 0;display:flex;align-items:center;gap:3px}
-.sess-head .finish{background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600}
-.sess-head .title{font-size:17px;font-weight:700;margin-bottom:4px}
-.sess-head .stats{display:flex;gap:14px}
-.sess-head .stats .st{font-size:12px;color:var(--text-3)}
-.sess-head .stats .st b{color:var(--text);font-weight:700;font-size:13px;margin-right:2px}
 
-.sess-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 0 20px}
+.sess-head{padding:calc(var(--safe-top) + 6px) 18px 10px;background:var(--bg)}
+.sess-head .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.sess-head .timer-wrap{display:flex;align-items:center;gap:6px}
+.sess-head .timer{font-size:34px;font-weight:700;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}
+.sess-head .play-btn{width:26px;height:26px;border-radius:50%;background:var(--border);border:none;display:flex;align-items:center;justify-content:center;color:var(--text-2);font-size:10px;padding-left:2px}
+.sess-head .head-actions{display:flex;gap:8px;align-items:center}
+.sess-head .ai-chip{background:var(--brand);color:#fff;border:none;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;box-shadow:0 2px 8px var(--brand-soft)}
+.sess-head .ai-chip .kitty{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:11px}
+.sess-head .finish{background:var(--brand);color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:15px;font-weight:600}
+.sess-head .sub{display:flex;align-items:center;justify-content:space-between}
+.sess-head .title-edit{display:flex;align-items:center;gap:6px;color:var(--text-3);font-size:15px;font-weight:500}
+.sess-head .title-edit .pen{font-size:12px}
+.sess-head .title-edit b{color:var(--text);font-weight:600;font-size:16px}
+.sess-head .stat-right{text-align:right;line-height:1.4}
+.sess-head .stat-right .r1{font-size:12px;color:var(--text-3);display:flex;gap:10px;justify-content:flex-end}
+.sess-head .stat-right .r1 span b{color:var(--text-3);font-weight:500;margin-right:2px}
+.sess-head .stat-right .r2{font-size:12px;color:var(--text-3)}
 
-.ex-block{background:var(--card);margin:0 14px 12px;border-radius:var(--radius-lg);overflow:hidden}
-.ex-block-head{padding:14px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid var(--border)}
-.ex-block-head .n{flex:1;font-size:15px;font-weight:600}
-.ex-block-head .menu{color:var(--text-3);font-size:18px;padding:0 4px}
+.sess-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 0 16px;background:var(--bg)}
 
-.set-hd{display:grid;grid-template-columns:30px 1fr 1fr 50px 30px;gap:8px;padding:8px 16px;font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
-.set-hd div:nth-child(2),.set-hd div:nth-child(3){text-align:center}
-.set-hd div:nth-child(4){text-align:center}
+.ex-block{background:var(--card);margin:10px 14px 10px;border-radius:20px;overflow:hidden;padding:16px 14px 8px}
+.ex-block-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.ex-block-head .ico{width:54px;height:54px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;overflow:hidden}
+.ex-block-head .info{flex:1;min-width:0;padding-top:2px}
+.ex-block-head .n{font-size:18px;font-weight:600;letter-spacing:-.2px;margin-bottom:4px}
+.ex-block-head .meta{font-size:13px;color:var(--text-3);display:flex;align-items:center;gap:8px}
+.ex-block-head .meta .sep{width:1px;height:10px;background:var(--border)}
+.ex-block-head .gear{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:18px;flex-shrink:0}
 
-.set-line{display:grid;grid-template-columns:30px 1fr 1fr 50px 30px;gap:8px;padding:10px 16px;align-items:center;border-top:.5px solid var(--border)}
-.set-line .num{font-size:14px;color:var(--text-3);font-weight:600;text-align:center}
-.set-line .cell{background:var(--bg);border:1px solid transparent;border-radius:8px;padding:8px;text-align:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
-.set-line .cell:active{border-color:var(--brand)}
-.set-line .cell.placeholder{color:var(--text-4);font-weight:400}
-.set-line .cell.ai{background:var(--ai-soft);color:var(--ai);border:1px dashed var(--ai-line);position:relative}
-.set-line .cell.ai::after{content:'AI';position:absolute;top:-6px;right:-4px;background:var(--ai);color:#fff;font-size:8px;padding:1px 4px;border-radius:4px;font-weight:700;letter-spacing:.5px}
-.set-line .rir{font-size:13px;color:var(--text-3);text-align:center;font-weight:500}
-.set-line .chk{width:26px;height:26px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto;cursor:pointer}
-.set-line .chk.done{background:var(--accent);color:#fff}
-.set-line .chk.done::after{content:'✓';font-size:14px;font-weight:700}
-.set-line.done{opacity:.65}
-.set-line.done .cell{background:transparent;border:none;font-weight:500}
+.ex-note{font-size:14px;color:var(--text-3);padding:6px 0 12px}
 
-.add-set{width:100%;background:transparent;border:none;padding:11px;color:var(--brand);font-size:14px;font-weight:500;border-top:.5px solid var(--border)}
-.add-set:active{background:var(--card-2)}
+.chip-toggle{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:none;border-radius:999px;padding:7px 14px;font-size:14px;color:var(--text-2);margin:0 0 8px;font-weight:500}
+.chip-toggle .cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--text-4);display:flex;align-items:center;justify-content:center;color:var(--text-4);font-size:11px;font-weight:700}
+.chip-toggle.on .cb{background:var(--brand);border-color:var(--brand);color:#fff}
 
-.ai-banner{margin:0 14px 12px;background:linear-gradient(135deg,var(--ai-soft),#ff6b3508);border:1px solid var(--ai-line);border-radius:var(--radius-lg);padding:12px 14px;display:flex;align-items:center;gap:10px;display:none}
-.ai-banner.show{display:flex}
-.ai-banner .dot{width:8px;height:8px;border-radius:50%;background:var(--ai);animation:pulse 1.4s infinite;flex-shrink:0}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.ai-banner .txt{flex:1;font-size:13px;color:var(--text-2);line-height:1.4}
-.ai-banner .txt b{color:var(--ai);font-weight:700}
-.ai-banner .close{background:transparent;border:none;color:var(--text-3);font-size:16px;padding:4px}
+.set-row{display:grid;grid-template-columns:56px 1fr 1fr 1fr 28px;gap:10px;align-items:center;padding:8px 0}
+.set-row .badge{height:56px;background:var(--bg);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--text)}
+.set-row .badge.warm{color:var(--warn)}
+.set-row .cell{height:56px;background:var(--bg);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-variant-numeric:tabular-nums}
+.set-row .cell .u{position:absolute;top:7px;left:11px;font-size:11px;color:var(--text-3);font-weight:500}
+.set-row .cell .v{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-top:8px}
+.set-row .cell.ph .v{color:var(--text-4);font-weight:400}
+.set-row .cell.ai{background:var(--ai-soft);border:1px dashed var(--ai-line)}
+.set-row .cell.ai .v{color:var(--ai)}
+.set-row .cell.ai::after{content:'AI';position:absolute;top:5px;right:8px;color:var(--ai);font-size:9px;font-weight:800;letter-spacing:.5px}
+.set-row .cell.tick{display:flex;align-items:center;justify-content:center}
+.set-row .cell.tick svg{width:26px;height:26px;stroke:var(--text-4);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.set-row .cell.tick.done{background:var(--accent)}
+.set-row .cell.tick.done svg{stroke:#fff;stroke-width:3.2}
+.set-row .more{display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:22px;letter-spacing:1px;font-weight:700;line-height:0;padding-bottom:4px;cursor:pointer}
+.set-row.done .cell:not(.tick){opacity:.55}
+.set-row.done .badge{opacity:.55}
 
-.add-ex-btn{margin:6px 14px;background:var(--card);border:1.5px dashed var(--border-strong);border-radius:var(--radius-lg);padding:14px;width:calc(100% - 28px);color:var(--brand);font-size:14px;font-weight:600}
-
-.sess-footer{background:var(--card);border-top:.5px solid var(--border);padding:10px 14px calc(var(--safe-bot) + 10px);display:flex;gap:8px}
-.sess-footer button{flex:1;background:var(--bg);border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;color:var(--text-2);display:flex;align-items:center;justify-content:center;gap:5px}
-.sess-footer button.primary{background:var(--brand);color:#fff;flex:1.4}
-.sess-footer button:active{opacity:.8}
+.sess-footer{background:var(--card);border-top:.5px solid var(--border);padding:10px 4px calc(var(--safe-bot) + 10px);display:flex;align-items:center;justify-content:space-around}
+.sess-footer .fbtn{flex:1;background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-2);padding:6px 0;font-size:11px;font-weight:500}
+.sess-footer .fbtn svg{width:24px;height:24px;stroke:var(--text-2);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.sess-footer .fbtn.add{position:relative}
+.sess-footer .fbtn.add .plus{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:300;box-shadow:0 4px 12px rgba(0,122,255,.35)}
+.sess-footer .fbtn.add .label{color:var(--text-2)}
 
 /* Rest sheet */
 .sheet-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
@@ -513,24 +522,51 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="sess-page" id="sess">
     <div class="sess-head">
       <div class="top">
-        <button class="back" onclick="backFromSession()">‹ 退出</button>
-        <div style="font-size:13px;color:var(--text-3);font-variant-numeric:tabular-nums" id="sess-timer">00:00</div>
-        <button class="finish" onclick="finishSession()">完成</button>
+        <div class="timer-wrap">
+          <div class="timer" id="sess-timer">00:00</div>
+          <button class="play-btn" onclick="toast('计时器已运行')">▶</button>
+        </div>
+        <div class="head-actions">
+          <button class="ai-chip" onclick="toast('AI 教练：分析你的训练中')">
+            <span class="kitty">✨</span>喵喵AI
+          </button>
+          <button class="finish" onclick="finishSession()">完成</button>
+        </div>
       </div>
-      <div class="title" id="sess-title">胸 · 肩 · 三头</div>
-      <div class="stats">
-        <div class="st"><b id="sess-sets">0</b>组</div>
-        <div class="st"><b id="sess-vol">0</b>kg</div>
-        <div class="st"><b id="sess-done">0</b>/16 完成</div>
+      <div class="sub">
+        <div class="title-edit" onclick="toast('编辑标题')">
+          <span class="pen">✎</span><b id="sess-title">胸</b>
+        </div>
+        <div class="stat-right">
+          <div class="r1"><span id="sess-sets-done">0</span>/<span id="sess-sets-total">15</span> 组 · <span id="sess-ex-done">0</span>/<span id="sess-ex-total">3</span> 动作</div>
+          <div class="r2"><span id="sess-vol-done">0</span>/<span id="sess-vol-total">8531</span> 容量</div>
+        </div>
       </div>
     </div>
 
     <div class="sess-body" id="sess-body"></div>
 
     <div class="sess-footer">
-      <button onclick="toggleRest()">⏱ 休息</button>
-      <button onclick="toast('训练笔记')">📝 笔记</button>
-      <button class="primary" onclick="toast('长按打勾 = 完成组 + 自动休息')">使用提示</button>
+      <button class="fbtn" onclick="backFromSession()">
+        <svg viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/></svg>
+        <span>最小化</span>
+      </button>
+      <button class="fbtn" onclick="toast('更多选项')">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+        <span>更多</span>
+      </button>
+      <button class="fbtn add" onclick="toast('打开动作库')">
+        <div class="plus">+</div>
+        <span class="label">加动作</span>
+      </button>
+      <button class="fbtn" onclick="toast('写心得')">
+        <svg viewBox="0 0 24 24"><path d="M11 4H5a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-6M17.5 2.5a2.12 2.12 0 013 3L12 14l-4 1 1-4 8.5-8.5z"/></svg>
+        <span>写心得</span>
+      </button>
+      <button class="fbtn" onclick="toast('连接表练')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>在表练</span>
+      </button>
     </div>
   </div>
 
@@ -591,13 +627,31 @@ const S = {
   restTarget:90
 };
 
-/* default session data (模板：胸肩三头推日) */
+/* default session data — 对齐截图：胸（杠铃卧推 9 组，含 3 热身） */
 const DEFAULT_EX = [
-  {name:'杠铃卧推', target:{w:60,r:8}, sets:[null,null,null,null], history:{w:57.5,r:8,rir:2}},
-  {name:'上斜哑铃卧推', target:{w:22.5,r:10}, sets:[null,null,null], history:{w:20,r:10,rir:2}},
-  {name:'哑铃推肩', target:{w:16,r:10}, sets:[null,null,null], history:{w:14,r:12,rir:3}},
-  {name:'绳索下压', target:{w:30,r:12}, sets:[null,null,null,null], history:{w:27.5,r:12,rir:2}},
-  {name:'哑铃飞鸟', target:{w:12,r:12}, sets:[null,null,null], history:{w:12,r:10,rir:1}}
+  {
+    name:'杠铃卧推', icon:'🏋️',
+    target:{w:95,r:4}, history:{w:90,r:5,rir:1},
+    targetVol:2230,
+    sets:[
+      {w:40,r:6,rir:4,warm:true},
+      {w:70,r:6,rir:3,warm:true},
+      {w:90,r:5,rir:2,warm:true},
+      null,null,null,null,null,null
+    ]
+  },
+  {
+    name:'上斜哑铃卧推', icon:'💪',
+    target:{w:22.5,r:10}, history:{w:20,r:10,rir:2},
+    targetVol:2700,
+    sets:[null,null,null,null]
+  },
+  {
+    name:'绳索夹胸', icon:'🔗',
+    target:{w:20,r:12}, history:{w:17.5,r:12,rir:2},
+    targetVol:3601,
+    sets:[null,null]
+  }
 ];
 
 /* ============== util ============== */
@@ -644,7 +698,7 @@ function segEx(el,k){el.parentElement.querySelectorAll('button').forEach(b=>b.cl
 /* ============== session ============== */
 function startSession(mode){
   S.session={
-    title: mode==='empty'?'空训练':'胸 · 肩 · 三头',
+    title: mode==='empty'?'空训练':'胸',
     exercises: mode==='empty'?[]:JSON.parse(JSON.stringify(DEFAULT_EX))
   };
   $('sess-title').textContent=S.session.title;
@@ -671,57 +725,72 @@ function finishSession(){
 function renderSession(){
   const body=$('sess-body');
   body.innerHTML='';
-  let totalSets=0,doneSets=0,totalVol=0,totalPlanned=0;
+  let totalSets=0,doneSets=0,totalVol=0,doneVol=0,doneEx=0;
 
   S.session.exercises.forEach((ex,ei)=>{
-    totalPlanned+=ex.sets.length;
+    totalSets+=ex.sets.length;
     const suggestion=computeSuggest(ex);
+    const exDone=ex.sets.every(s=>s);
+    if(exDone) doneEx++;
+
+    let exDoneVol=0;
+    ex.sets.forEach(s=>{if(s){exDoneVol+=s.w*s.r}});
+    doneVol+=exDoneVol;
+    totalVol+=ex.targetVol||0;
 
     let setsHtml='';
+    const nextIdx=ex.sets.findIndex(s=>!s);
     ex.sets.forEach((s,si)=>{
-      totalSets++;
       if(s){
         doneSets++;
-        totalVol+=s.w*s.r;
-        setsHtml+=`<div class="set-line done">
-          <div class="num">${si+1}</div>
-          <div class="cell">${s.w}kg</div>
-          <div class="cell">${s.r}次</div>
-          <div class="rir">R${s.rir}</div>
-          <div class="chk done"></div>
+        const badge=s.warm?'<div class="badge warm">热</div>':`<div class="badge">${si+1}</div>`;
+        setsHtml+=`<div class="set-row done">
+          ${badge}
+          <div class="cell"><span class="u">kg</span><span class="v">${s.w}</span></div>
+          <div class="cell"><span class="u">次</span><span class="v">${s.r}</span></div>
+          <div class="cell tick done"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+          <div class="more" onclick="toast('更多操作')">⋯</div>
         </div>`;
       }else{
-        const isNext=ex.sets.findIndex(x=>!x)===si;
-        const wDisp=isNext?suggestion.w:'—';
-        const rDisp=isNext?suggestion.r:'—';
-        setsHtml+=`<div class="set-line">
-          <div class="num">${si+1}</div>
-          <div class="cell ${isNext?'ai':'placeholder'}">${wDisp}${isNext?'kg':''}</div>
-          <div class="cell ${isNext?'ai':'placeholder'}">${rDisp}${isNext?'次':''}</div>
-          <div class="rir">—</div>
-          <div class="chk" onclick="openInput(${ei},${si})"></div>
+        const isNext=si===nextIdx;
+        const wVal=isNext?suggestion.w:'—';
+        const rVal=isNext?suggestion.r:'—';
+        const cellCls=isNext?'ai':'ph';
+        setsHtml+=`<div class="set-row">
+          <div class="badge">${si+1}</div>
+          <div class="cell ${cellCls}"><span class="u">kg</span><span class="v">${wVal}</span></div>
+          <div class="cell ${cellCls}"><span class="u">次</span><span class="v">${rVal}</span></div>
+          <div class="cell tick" onclick="openInput(${ei},${si})"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
+          <div class="more" onclick="toast('更多操作')">⋯</div>
         </div>`;
       }
     });
 
+    const volDisp=`${exDoneVol.toFixed(1)}/${(ex.targetVol||0).toFixed(1)}`;
     body.innerHTML+=`
       <div class="ex-block">
         <div class="ex-block-head">
-          <div class="n">${ex.name}</div>
-          <div class="menu">⋯</div>
+          <div class="ico">${ex.icon}</div>
+          <div class="info">
+            <div class="n">${ex.name}</div>
+            <div class="meta">${volDisp}<span class="sep"></span></div>
+          </div>
+          <div class="gear" onclick="toast('动作设置')">⚙</div>
         </div>
-        <div class="set-hd"><div></div><div>重量</div><div>次数</div><div>RIR</div><div></div></div>
+        <div class="ex-note" onclick="toast('输入备注')">点击输入备注</div>
+        <button class="chip-toggle on" onclick="this.classList.toggle('on')">
+          <span class="cb">✓</span>每组计时
+        </button>
         ${setsHtml}
-        <button class="add-set" onclick="addSet(${ei})">+ 加一组</button>
       </div>`;
   });
 
-  body.innerHTML+=`<button class="add-ex-btn" onclick="toast('打开动作库选择')">+ 添加动作</button>`;
-
-  $('sess-sets').textContent=totalSets;
-  $('sess-vol').textContent=Math.round(totalVol);
-  $('sess-done').textContent=`${doneSets}`;
-  document.querySelector('.sess-head .stats .st:last-child').innerHTML=`<b>${doneSets}</b>/${totalPlanned} 完成`;
+  $('sess-sets-done').textContent=doneSets;
+  $('sess-sets-total').textContent=totalSets;
+  $('sess-ex-done').textContent=doneEx;
+  $('sess-ex-total').textContent=S.session.exercises.length;
+  $('sess-vol-done').textContent=Math.round(doneVol);
+  $('sess-vol-total').textContent=Math.round(totalVol);
 }
 
 /* ============== AI suggestion ============== */
