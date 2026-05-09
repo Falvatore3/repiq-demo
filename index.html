@@ -262,75 +262,95 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 /* ===== Post-set modal (打勾后的倒计时+反馈+AI建议弹窗) ===== */
-.ps-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:50;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ps-mask{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .22s;z-index:50}
 .ps-mask.show{opacity:1;pointer-events:auto}
-.ps-sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:22px 22px 0 0;padding:14px 20px calc(var(--safe-bot) + 18px);transform:translateY(110%);transition:transform .32s cubic-bezier(.22,.61,.36,1);z-index:51;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.ps-sheet.show{transform:translateY(0)}
-.ps-sheet .grab{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 8px}
+.ps-sheet{position:fixed;left:12px;right:12px;bottom:calc(var(--safe-bot) + 72px);max-width:456px;margin:0 auto;background:var(--card);border-radius:22px;padding:14px 18px 16px;transform:translateY(calc(100% + 80px)) scale(.92);opacity:0;transition:transform .32s cubic-bezier(.22,.61,.36,1),opacity .2s;z-index:52;box-shadow:0 12px 40px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);max-height:calc(100vh - 140px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ps-sheet.show{transform:translateY(0) scale(1);opacity:1}
+.ps-sheet.fab-hidden{pointer-events:none;transform:translateY(20px) scale(.85);opacity:0}
 
-.ps-timer-row{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 14px;border-bottom:.5px solid var(--border);margin-bottom:14px}
-.ps-timer-row .left{display:flex;align-items:center;gap:12px}
-.ps-timer-row .ring{width:52px;height:52px;position:relative}
+.ps-sheet .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:2px 0}
+.ps-sheet .top-bar .tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.ps-sheet .top-bar .mini{width:28px;height:28px;border-radius:50%;background:var(--bg);border:none;color:var(--text-2);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ps-sheet .top-bar .mini:active{background:var(--border)}
+
+.ps-timer-row{display:flex;align-items:center;gap:12px;padding:2px 0 12px;border-bottom:.5px solid var(--border);margin-bottom:12px}
+.ps-timer-row .ring{width:52px;height:52px;position:relative;flex-shrink:0}
 .ps-timer-row .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ps-timer-row .ring .trk{fill:none;stroke:var(--border);stroke-width:4}
-.ps-timer-row .ring .fll{fill:none;stroke:var(--brand);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ps-timer-row .ring .fll{fill:none;stroke:var(--brand);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
 .ps-timer-row .ring.ai .fll{stroke:var(--ai)}
-.ps-timer-row .ring .inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.ps-timer-row .ring .inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.ps-timer-row .txt{flex:1;min-width:0}
 .ps-timer-row .txt .lbl{font-size:11px;color:var(--text-3);letter-spacing:1px;font-weight:600;text-transform:uppercase;margin-bottom:2px}
-.ps-timer-row .txt .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
-.ps-timer-row .txt .val .tot{font-size:13px;color:var(--text-3);font-weight:500;margin-left:3px}
-.ps-timer-row .ctls{display:flex;gap:6px;align-items:center}
-.ps-timer-row .ctls button{background:var(--bg);border:none;color:var(--text-2);font-size:12px;font-weight:600;padding:8px 10px;border-radius:8px;min-width:44px}
+.ps-timer-row .txt .val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1}
+.ps-timer-row .txt .val .tot{font-size:12px;color:var(--text-3);font-weight:500;margin-left:4px}
+.ps-timer-row .ctls{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.ps-timer-row .ctls button{background:var(--bg);border:none;color:var(--text-2);font-size:12px;font-weight:700;padding:8px 10px;border-radius:8px;min-width:42px;cursor:pointer}
+.ps-timer-row .ctls button:active{background:var(--brand);color:#fff}
 
-.ps-set-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.ps-set-head .pill{background:var(--accent-soft);color:var(--accent);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
-.ps-set-head .nm{font-size:14px;color:var(--text-2);font-weight:600}
-.ps-set-head .val{font-size:14px;color:var(--text);font-weight:700;margin-left:auto;font-variant-numeric:tabular-nums}
-.ps-set-head .val b{font-size:16px}
+.ps-set-line{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2);margin-bottom:10px}
+.ps-set-line .nm{font-weight:600;color:var(--text)}
+.ps-set-line .val{margin-left:auto;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.ps-set-line .val b{font-size:15px}
 
-.ps-label{font-size:12px;color:var(--text-3);margin:14px 0 8px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
+.ps-label{font-size:12px;color:var(--text-3);margin:12px 0 8px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 .ps-label .req{color:var(--danger);font-size:14px}
 
 .ps-effort{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ps-effort .o{background:var(--bg);border:1.5px solid transparent;border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;transition:all .15s}
-.ps-effort .o .emo{font-size:28px;line-height:1;margin-bottom:6px}
-.ps-effort .o .t{font-size:13px;font-weight:700;color:var(--text)}
+.ps-effort .o{background:var(--bg);border:1.5px solid transparent;border-radius:12px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:all .15s}
+.ps-effort .o .emo{font-size:24px;line-height:1;margin-bottom:4px}
+.ps-effort .o .t{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
 .ps-effort .o .s{font-size:10px;color:var(--text-3);margin-top:2px;font-weight:500}
 .ps-effort .o.sel{background:var(--brand-soft);border-color:var(--brand)}
 .ps-effort .o.sel .t{color:var(--brand)}
 
-.ps-rir{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ps-rir{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .ps-rir .o{background:var(--bg);border:1.5px solid transparent;border-radius:10px;padding:12px 0;text-align:center;cursor:pointer;transition:all .15s}
-.ps-rir .o .n{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.ps-rir .o .n{font-size:20px;font-weight:700;color:var(--text);line-height:1}
 .ps-rir .o .s{font-size:10px;color:var(--text-3);margin-top:4px;font-weight:500}
 .ps-rir .o.sel{background:var(--brand-soft);border-color:var(--brand)}
 .ps-rir .o.sel .n{color:var(--brand)}
 
-.ps-ai{background:linear-gradient(135deg,var(--ai-soft),#ff6b3506);border:1px solid var(--ai-line);border-radius:16px;padding:14px 14px 12px;margin-top:16px;position:relative;opacity:.55;pointer-events:none;transition:opacity .25s}
+.ps-ai{background:linear-gradient(135deg,var(--ai-soft),#ff6b3506);border:1px solid var(--ai-line);border-radius:14px;padding:12px 14px 11px;margin-top:14px;position:relative;opacity:.55;pointer-events:none;transition:opacity .25s}
 .ps-ai.ready{opacity:1;pointer-events:auto}
 .ps-ai .hd{display:flex;align-items:center;gap:6px;margin-bottom:10px}
 .ps-ai .hd .dot{width:7px;height:7px;border-radius:50%;background:var(--ai);animation:pulse 1.4s infinite}
 .ps-ai .hd .t{font-size:11px;font-weight:700;color:var(--ai);letter-spacing:1px;text-transform:uppercase}
 .ps-ai .hd .loading{font-size:11px;color:var(--text-3);margin-left:auto;font-weight:500}
 
-.ps-ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.ps-ai-cell{background:var(--card);border-radius:10px;padding:10px 12px}
+.ps-ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.ps-ai-cell{background:var(--card);border-radius:10px;padding:9px 12px}
 .ps-ai-cell .l{font-size:10px;color:var(--text-3);letter-spacing:.3px;margin-bottom:3px;font-weight:600}
 .ps-ai-cell .v{font-size:20px;font-weight:700;color:var(--ai);letter-spacing:-.3px;font-variant-numeric:tabular-nums}
 .ps-ai-cell .v .u{font-size:11px;color:var(--text-3);font-weight:500;margin-left:2px}
-.ps-ai-cell .d{font-size:11px;color:var(--text-3);margin-top:2px}
+.ps-ai-cell .d{font-size:10px;color:var(--text-3);margin-top:2px}
 .ps-ai-cell .d.up{color:var(--accent)}
 .ps-ai-cell .d.down{color:var(--danger)}
 
 .ps-ai-reason{font-size:12px;color:var(--text-2);line-height:1.5;padding-top:8px;border-top:1px dashed var(--ai-line)}
 .ps-ai-reason b{color:var(--ai)}
 
-.ps-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:14px}
-.ps-actions button{border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer}
+.ps-actions{display:flex;gap:8px;margin-top:12px}
+.ps-actions button{flex:1;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer}
 .ps-actions .keep{background:var(--bg);color:var(--text-2)}
-.ps-actions .accept{background:var(--brand);color:#fff;box-shadow:0 4px 12px var(--brand-soft)}
+.ps-actions .accept{background:var(--brand);color:#fff;flex:1.4;box-shadow:0 4px 12px var(--brand-soft)}
+.ps-actions .accept.done{background:var(--accent);box-shadow:0 4px 12px var(--accent-soft)}
 .ps-actions .accept:active,.ps-actions .keep:active{opacity:.85}
-.ps-actions .accept[disabled]{opacity:.4;box-shadow:none}
+.ps-actions .accept[disabled]{opacity:.4;box-shadow:none;pointer-events:none}
+
+/* ===== FAB 悬浮球 ===== */
+.ps-fab{position:fixed;right:14px;bottom:calc(var(--safe-bot) + 86px);width:60px;height:60px;border-radius:50%;background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);z-index:49;cursor:pointer;opacity:0;transform:scale(.5) translateY(20px);pointer-events:none;transition:transform .28s cubic-bezier(.22,1.4,.36,1),opacity .2s;display:flex;align-items:center;justify-content:center}
+.ps-fab.show{opacity:1;transform:scale(1) translateY(0);pointer-events:auto}
+.ps-fab.show:active{transform:scale(.94)}
+.ps-fab svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ps-fab .ftrk{fill:none;stroke:var(--border);stroke-width:3}
+.ps-fab .ffll{fill:none;stroke:var(--brand);stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.ps-fab.ai .ffll{stroke:var(--ai)}
+.ps-fab .inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ps-fab .sec{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.5px;color:var(--text)}
+.ps-fab .lbl{font-size:9px;color:var(--text-3);margin-top:1px;font-weight:600;letter-spacing:.3px}
+.ps-fab .badge{position:absolute;top:-2px;right:-2px;background:var(--ai);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:8px;letter-spacing:.3px;z-index:2;opacity:0;transform:scale(.5);transition:all .2s}
+.ps-fab.has-ai .badge{opacity:1;transform:scale(1)}
 </style>
 </head>
 <body>
@@ -681,24 +701,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </div>
   </div>
 
-  <!-- ============= Post-set Sheet（勾选后弹窗：倒计时+反馈+AI 建议） ============= -->
-  <div class="ps-mask" id="ps-mask" onclick="psCloseMaybe()"></div>
+  <!-- ============= Post-set Floating Panel（打勾后的浮窗：倒计时+反馈+AI 建议） ============= -->
+  <div class="ps-mask" id="ps-mask" onclick="psMinimize()"></div>
   <div class="ps-sheet" id="ps-sheet">
-    <div class="grab"></div>
+    <div class="top-bar">
+      <div class="tag">✓ 已记录</div>
+      <button class="mini" onclick="psMinimize()" title="收起">⌄</button>
+    </div>
 
     <div class="ps-timer-row">
-      <div class="left">
-        <div class="ring" id="ps-ring">
-          <svg viewBox="0 0 40 40">
-            <circle class="trk" cx="20" cy="20" r="17"/>
-            <circle class="fll" id="ps-ring-fill" cx="20" cy="20" r="17" stroke-dasharray="106.8" stroke-dashoffset="0"/>
-          </svg>
-          <div class="inner" id="ps-ring-text">1:30</div>
-        </div>
-        <div class="txt">
-          <div class="lbl">组间休息</div>
-          <div class="val"><span id="ps-left-time">1:30</span><span class="tot"> / <span id="ps-total-time">1:30</span></span></div>
-        </div>
+      <div class="ring" id="ps-ring">
+        <svg viewBox="0 0 40 40">
+          <circle class="trk" cx="20" cy="20" r="17"/>
+          <circle class="fll" id="ps-ring-fill" cx="20" cy="20" r="17" stroke-dasharray="106.8" stroke-dashoffset="0"/>
+        </svg>
+        <div class="inner" id="ps-ring-text">1:30</div>
+      </div>
+      <div class="txt">
+        <div class="lbl">组间休息</div>
+        <div class="val"><span id="ps-left-time">1:30</span><span class="tot">/<span id="ps-total-time">1:30</span></span></div>
       </div>
       <div class="ctls">
         <button onclick="psRestAdd(-15)">−15s</button>
@@ -706,33 +727,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       </div>
     </div>
 
-    <div class="ps-set-head">
-      <div class="pill">✓ 已记录</div>
-      <div class="nm" id="ps-set-label">第 4 组 · 杠铃卧推</div>
-      <div class="val"><b id="ps-set-w">100</b>kg × <b id="ps-set-r">2</b></div>
+    <div class="ps-set-line">
+      <span class="nm" id="ps-set-label">第 4 组 · 杠铃卧推</span>
+      <span class="val"><b id="ps-set-w">100</b>kg × <b id="ps-set-r">2</b></span>
     </div>
 
-    <div class="ps-label">动作吃力程度 <span class="req">*</span></div>
+    <div class="ps-label">动作标准程度 <span class="req">*</span></div>
     <div class="ps-effort" id="ps-effort">
-      <div class="o" data-eff="1"><div class="emo">😌</div><div class="t">轻松</div><div class="s">还能加重</div></div>
-      <div class="o" data-eff="2"><div class="emo">😐</div><div class="t">正常</div><div class="s">有挑战</div></div>
-      <div class="o" data-eff="3"><div class="emo">😤</div><div class="t">力竭</div><div class="s">做不动了</div></div>
+      <div class="o" data-eff="3"><div class="emo">🎯</div><div class="t">非常标准</div><div class="s">全程到位</div></div>
+      <div class="o" data-eff="2"><div class="emo">👌</div><div class="t">八成标准</div><div class="s">稍有代偿</div></div>
+      <div class="o" data-eff="1"><div class="emo">⚠️</div><div class="t">不太标准</div><div class="s">明显变形</div></div>
     </div>
 
-    <div class="ps-label">感觉还能再做几个 <span class="req">*</span></div>
+    <div class="ps-label">还能再做几个 <span class="req">*</span></div>
     <div class="ps-rir" id="ps-rir">
       <div class="o" data-rir="0"><div class="n">0</div><div class="s">一个都不</div></div>
       <div class="o" data-rir="1"><div class="n">1</div><div class="s">还能1个</div></div>
-      <div class="o" data-rir="2"><div class="n">2</div><div class="s">还有余</div></div>
-      <div class="o" data-rir="3"><div class="n">3</div><div class="s">轻松</div></div>
-      <div class="o" data-rir="4"><div class="n">4+</div><div class="s">太轻了</div></div>
+      <div class="o" data-rir="2"><div class="n">2</div><div class="s">还能2个</div></div>
+      <div class="o" data-rir="3"><div class="n">3+</div><div class="s">还很轻松</div></div>
     </div>
 
     <div class="ps-ai" id="ps-ai">
       <div class="hd">
         <div class="dot"></div>
         <div class="t">AI 实时建议</div>
-        <div class="loading" id="ps-ai-loading">填完上面两项我来算</div>
+        <div class="loading" id="ps-ai-loading">填完两项我来算</div>
       </div>
       <div class="ps-ai-grid">
         <div class="ps-ai-cell">
@@ -753,6 +772,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <button class="keep" onclick="psKeepOriginal()">按原计划</button>
       <button class="accept" id="ps-accept" disabled onclick="psAcceptAI()">接受 AI 建议</button>
     </div>
+  </div>
+
+  <!-- FAB 悬浮球（收起态） -->
+  <div class="ps-fab" id="ps-fab" onclick="psExpand()">
+    <svg viewBox="0 0 60 60">
+      <circle class="ftrk" cx="30" cy="30" r="26"/>
+      <circle class="ffll" id="ps-fab-fill" cx="30" cy="30" r="26" stroke-dasharray="163.4" stroke-dashoffset="0"/>
+    </svg>
+    <div class="inner">
+      <div class="sec" id="ps-fab-sec">90</div>
+      <div class="lbl" id="ps-fab-lbl">休息</div>
+    </div>
+    <div class="badge">AI</div>
   </div>
 
   <div class="toast" id="toast">OK</div>
@@ -994,12 +1026,12 @@ function submitIS(){
   renderSession();
 }
 
-/* ============== Post-set modal: 打勾后弹窗 ============== */
-const PS={ei:null,si:null,eff:null,rir:null,totalRest:90,leftRest:90,timer:null,aiRest:null,aiW:null,aiR:null,aiReason:''};
+/* ============== Post-set modal: 打勾后浮窗 + FAB 悬浮球 ============== */
+const PS={ei:null,si:null,eff:null,rir:null,totalRest:90,leftRest:90,timer:null,aiRest:null,aiW:null,aiR:null,aiReason:'',active:false};
 
 function openPostSet(ei,si){
   PS.ei=ei;PS.si=si;PS.eff=null;PS.rir=null;
-  PS.totalRest=90;PS.leftRest=90;
+  PS.totalRest=90;PS.leftRest=90;PS.active=true;
   const ex=S.session.exercises[ei];
   const s=ex.sets[si];
   $('ps-set-label').textContent=`第 ${si+1} 组 · ${ex.name}`;
@@ -1010,29 +1042,36 @@ function openPostSet(ei,si){
   document.querySelectorAll('#ps-rir .o').forEach(o=>o.classList.remove('sel'));
   $('ps-ai').classList.remove('ready');
   $('ps-accept').disabled=true;
-  $('ps-ai-loading').textContent='填完上面两项我来算';
+  $('ps-accept').classList.remove('done');
+  $('ps-accept').textContent='接受 AI 建议';
+  $('ps-ai-loading').textContent='填完两项我来算';
   $('ps-ai-rest').textContent='—';
   $('ps-ai-nw').textContent='—';
   $('ps-ai-nr').textContent='—';
   $('ps-ai-rest-d').textContent='—';$('ps-ai-rest-d').className='d';
   $('ps-ai-nw-d').textContent='—';$('ps-ai-nw-d').className='d';
   $('ps-ai-reason').innerHTML='填写完毕后，AI 会根据你的表现给出个性化建议。';
+  $('ps-ring').classList.remove('ai');
+  $('ps-fab').classList.remove('ai','has-ai');
 
   updatePSTime();
   $('ps-mask').classList.add('show');
+  $('ps-sheet').classList.remove('fab-hidden');
   $('ps-sheet').classList.add('show');
+  $('ps-fab').classList.remove('show');
 
   if(PS.timer)clearInterval(PS.timer);
   PS.timer=setInterval(()=>{
     PS.leftRest--;
     updatePSTime();
-    if(PS.leftRest<=0){closePostSet(true)}
+    if(PS.leftRest<=0) psFinish();
   },1000);
 }
 
 function updatePSTime(){
-  const m=Math.floor(Math.max(0,PS.leftRest)/60);
-  const sec=String(Math.max(0,PS.leftRest)%60).padStart(2,'0');
+  const left=Math.max(0,PS.leftRest);
+  const m=Math.floor(left/60);
+  const sec=String(left%60).padStart(2,'0');
   const disp=`${m}:${sec}`;
   $('ps-ring-text').textContent=disp;
   $('ps-left-time').textContent=disp;
@@ -1040,33 +1079,50 @@ function updatePSTime(){
   const ts=String(PS.totalRest%60).padStart(2,'0');
   $('ps-total-time').textContent=`${tm}:${ts}`;
   const circ=106.8;
-  const ratio=Math.max(0,PS.leftRest)/PS.totalRest;
+  const ratio=left/PS.totalRest;
   $('ps-ring-fill').style.strokeDashoffset=circ*(1-ratio);
+  // FAB 同步
+  $('ps-fab-sec').textContent=left<60?left:`${m}:${sec}`;
+  const fabCirc=163.4;
+  $('ps-fab-fill').style.strokeDashoffset=fabCirc*(1-ratio);
 }
 
 function psRestAdd(d){
   PS.leftRest=Math.max(5,PS.leftRest+d);
   PS.totalRest=Math.max(5,PS.totalRest+d);
   updatePSTime();
-  toast(d>0?`休息 +${d}s`:`休息 ${d}s`);
 }
 
-function psCloseMaybe(){
-  // 点背景不关闭，避免误操作；必须用按钮
-  toast('请选择「按原计划」或「接受 AI 建议」');
-}
-
-function closePostSet(auto){
-  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
+/* 点空白 → 收起成 FAB */
+function psMinimize(){
+  if(!PS.active)return;
   $('ps-mask').classList.remove('show');
   $('ps-sheet').classList.remove('show');
-  // 保存当前填写的 eff/rir 到 set（如果用户填了）
-  if(PS.eff!==null || PS.rir!==null){
-    const s=S.session.exercises[PS.ei].sets[PS.si];
-    if(s){s.rir=PS.rir;s.eff=PS.eff}
-    renderSession();
-  }
-  if(auto)toast('倒计时结束，开始下一组');
+  $('ps-sheet').classList.add('fab-hidden');
+  $('ps-fab').classList.add('show');
+}
+
+/* 点 FAB → 展开浮窗 */
+function psExpand(){
+  if(!PS.active)return;
+  $('ps-mask').classList.add('show');
+  $('ps-sheet').classList.remove('fab-hidden');
+  $('ps-sheet').classList.add('show');
+  $('ps-fab').classList.remove('show');
+}
+
+/* 倒计时归零 / 用户主动结束 */
+function psFinish(){
+  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
+  PS.active=false;
+  const s=S.session.exercises[PS.ei].sets[PS.si];
+  if(s){s.rir=PS.rir;s.eff=PS.eff}
+  renderSession();
+  $('ps-mask').classList.remove('show');
+  $('ps-sheet').classList.remove('show');
+  $('ps-sheet').classList.remove('fab-hidden');
+  $('ps-fab').classList.remove('show','ai','has-ai');
+  toast('休息结束，下一组开始');
 }
 
 /* ============== 点选 effort / rir ============== */
@@ -1083,7 +1139,10 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
   recomputeAI();
 }));
 
-/* ============== AI 实时重算（核心算法） ============== */
+/* ============== AI 实时重算（核心算法） ==============
+   eff：3=非常标准  2=八成标准  1=不太标准
+   rir：0/1/2/3+  （3+ 表示还很轻松）
+*/
 function recomputeAI(){
   if(PS.eff===null || PS.rir===null){
     $('ps-ai-loading').textContent='再填一项就能算';
@@ -1095,45 +1154,48 @@ function recomputeAI(){
     const ex=S.session.exercises[PS.ei];
     const s=ex.sets[PS.si];
     const tgt=ex.target.r;
-    const completion=s.r/tgt;
 
-    // ===== 决策：下组重量 =====
     let nw=s.w, nr=tgt, wDelta=0, reason='';
-    if(completion < 0.8){
-      nw=Math.max(10, Math.round(s.w*0.925*2)/2);
-      wDelta=nw-s.w;
-      reason=`上组只做到 ${s.r}/${tgt} 次（<80%），<b>减重 ${Math.abs(wDelta)}kg</b> 保证动作质量`;
-    } else if(PS.eff===1 && PS.rir>=3){
+
+    /* 决策：下组重量 × 次数 */
+    if(PS.eff===1){
+      // 动作不标准：必须减重
+      nw=Math.max(10,Math.round(s.w*0.9*2)/2);wDelta=nw-s.w;
+      reason=`动作已明显变形，<b>减重 ${Math.abs(wDelta)}kg</b> 练动作模式，比盲目加重更重要`;
+    } else if(PS.eff===2 && PS.rir>=3){
+      // 八成标准 + 还很轻松 → 小幅加
+      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
+      reason=`动作基本到位且还有余力，<b>加 2.5kg</b> 同时注意动作质量`;
+    } else if(PS.eff===2){
+      // 八成标准 + RIR 0-2 → 保持
+      nw=s.w;wDelta=0;
+      reason=PS.rir===0?`已接近力竭且动作有代偿，<b>保持 ${s.w}kg</b>，下组专注动作质量`:`状态可接受，<b>保持 ${s.w}kg</b> 巩固当前水平`;
+    } else if(PS.eff===3 && PS.rir>=3){
+      // 非常标准 + 还很轻松 → 激进加
       nw=Math.round((s.w+5)*2)/2;wDelta=5;
-      reason=`轻松完成且还剩 ${PS.rir}+ 次储备，<b>直接加 5kg</b>，别浪费状态`;
-    } else if(PS.eff===1 && PS.rir===2){
+      reason=`动作非常标准且还剩 3+ 次储备，<b>直接加 5kg</b>，状态好别浪费`;
+    } else if(PS.eff===3 && PS.rir===2){
       nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
-      reason=`完成很轻松，<b>加 2.5kg</b> 继续渐进超负荷`;
-    } else if(PS.eff===2 && PS.rir>=2){
-      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
-      reason=`状态正常、还有余力，<b>小幅加 2.5kg</b>`;
-    } else if(PS.eff===2 && PS.rir<=1){
-      nw=s.w;wDelta=0;
-      reason=`状态正常但接近力竭，<b>保持 ${s.w}kg</b>，追求相同次数`;
-    } else if(PS.eff===3){
-      nw=s.w;wDelta=0;
-      if(PS.rir===0)reason=`力竭到 RIR 0，<b>保持 ${s.w}kg</b>，下次再冲`;
-      else reason=`已接近力竭，<b>保持重量</b>`;
-    } else {
+      reason=`动作标准、状态不错，<b>加 2.5kg</b> 继续渐进超负荷`;
+    } else if(PS.eff===3 && PS.rir===1){
       nw=Math.round((s.w+1.25)*2)/2;wDelta=1.25;
-      reason=`状态尚可，<b>小增 1.25kg</b>`;
+      reason=`标准完成、接近力竭，<b>小增 1.25kg</b> 保持挑战`;
+    } else {
+      // eff=3 & rir=0 → 力竭
+      nw=s.w;wDelta=0;
+      reason=`力竭到 RIR 0 但动作标准，<b>保持 ${s.w}kg</b>，下次再冲 PR`;
     }
 
-    // ===== 决策：休息时长 =====
+    /* 决策：休息时长 */
     let rest=90;
-    if(PS.eff===3 || PS.rir===0) rest=150;           // 力竭 → 长休
-    else if(PS.eff===3 || PS.rir<=1) rest=120;
-    else if(PS.eff===2 && PS.rir===2) rest=90;
-    else if(PS.eff===1 && PS.rir>=3) rest=60;        // 太轻 → 短休加强密度
-    else rest=90;
-    if(s.w>=80) rest+=15;                             // 绝对重量大加 15s
+    if(PS.rir===0) rest=150;                 // 力竭 → 长休
+    else if(PS.rir===1) rest=120;
+    else if(PS.rir===2) rest=90;
+    else rest=60;                            // RIR 3+ → 短休加强密度
+    if(PS.eff===1) rest+=15;                 // 动作不标准 → 多休息冷静
+    if(s.w>=80) rest+=15;                    // 绝对重量大加 15s
+    rest=Math.round(rest/5)*5;               // 取整到 5 秒
 
-    // 更新 UI
     PS.aiRest=rest;PS.aiW=nw;PS.aiR=nr;PS.aiReason=reason;
 
     $('ps-ai').classList.add('ready');
@@ -1145,7 +1207,7 @@ function recomputeAI(){
     const restDelta=rest-90;
     if(restDelta>0){$('ps-ai-rest-d').textContent=`+${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d down'}
     else if(restDelta<0){$('ps-ai-rest-d').textContent=`${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d up'}
-    else{$('ps-ai-rest-d').textContent='标准时长';$('ps-ai-rest-d').className='d'}
+    else{$('ps-ai-rest-d').textContent='标准 90s';$('ps-ai-rest-d').className='d'}
 
     if(wDelta>0){$('ps-ai-nw-d').textContent=`↑ +${wDelta}kg`;$('ps-ai-nw-d').className='d up'}
     else if(wDelta<0){$('ps-ai-nw-d').textContent=`↓ ${wDelta}kg`;$('ps-ai-nw-d').className='d down'}
@@ -1154,43 +1216,41 @@ function recomputeAI(){
     $('ps-ai-reason').innerHTML=reason;
     $('ps-accept').disabled=false;
 
-    // 同步更新倒计时总时长为 AI 建议（保留已流逝部分）
+    /* 自动调整倒计时（按 AI 建议，保留已流逝部分） */
     const elapsed=PS.totalRest-PS.leftRest;
     PS.totalRest=rest;
-    PS.leftRest=Math.max(5,rest-elapsed);
-    // 换成 AI 色环
+    PS.leftRest=Math.max(3,rest-elapsed);
     $('ps-ring').classList.add('ai');
+    $('ps-fab').classList.add('ai','has-ai');
     updatePSTime();
   },450);
 }
 
-/* ============== 确认按钮 ============== */
+/* ============== 确认按钮 ==============
+   关键：接受 AI 不关闭弹窗，仅把下组替换 + 按钮变成"已接受 ✓"
+*/
 function psKeepOriginal(){
-  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
   const s=S.session.exercises[PS.ei].sets[PS.si];
   if(s){s.rir=PS.rir;s.eff=PS.eff}
   renderSession();
-  $('ps-mask').classList.remove('show');
-  $('ps-sheet').classList.remove('show');
-  $('ps-ring').classList.remove('ai');
   toast('已保留原计划');
+  // 保留弹窗和倒计时，让用户继续看休息时间
 }
 
 function psAcceptAI(){
-  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
   const ex=S.session.exercises[PS.ei];
   const s=ex.sets[PS.si];
   if(s){s.rir=PS.rir;s.eff=PS.eff}
-  // 把下一组替换为 AI 建议
   const nextSi=PS.si+1;
   if(nextSi < ex.sets.length && !ex.sets[nextSi]){
     ex.aiNext={si:nextSi, w:PS.aiW, r:PS.aiR};
   }
   renderSession();
-  $('ps-mask').classList.remove('show');
-  $('ps-sheet').classList.remove('show');
-  $('ps-ring').classList.remove('ai');
   toast(`✓ 下组已更新为 ${PS.aiW}kg × ${PS.aiR}`);
+  // 按钮变成已接受状态，但保留弹窗
+  $('ps-accept').classList.add('done');
+  $('ps-accept').textContent='✓ 已接受，休息中…';
+  $('ps-accept').disabled=true;
 }
 
 /* ============== rest ============== */
