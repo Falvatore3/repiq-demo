@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>RepIQ · 训记架构版 v0.6.1</title>
+<title>RepIQ · 真 AI 版 v0.8</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 :root{
@@ -175,6 +175,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sess-head .play-btn{width:26px;height:26px;border-radius:50%;background:var(--border);border:none;display:flex;align-items:center;justify-content:center;color:var(--text-2);font-size:10px;padding-left:2px}
 .sess-head .head-actions{display:flex;gap:8px;align-items:center}
 .sess-head .ai-chip{background:var(--brand);color:#fff;border:none;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;box-shadow:0 2px 8px var(--brand-soft)}
+.sess-head .ai-chip.off{background:var(--bg);color:var(--text-3);box-shadow:none}
+.sess-head .ai-chip.off .kitty{background:var(--border);color:var(--text-3)}
 .sess-head .ai-chip .kitty{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:11px}
 .sess-head .finish{background:var(--brand);color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:15px;font-weight:600}
 .sess-head .sub{display:flex;align-items:center;justify-content:space-between}
@@ -417,7 +419,29 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-skip-link button{background:transparent;border:none;color:var(--text-3);font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;opacity:.7;transition:opacity .15s}
 .ps-skip-link button:active{opacity:1;color:var(--text-2)}
 
-/* ===== FAB 悬浮球 ===== */
+/* ===== API Key 设置弹窗 ===== */
+.ak-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .22s;z-index:70}
+.ak-mask.show{opacity:1;pointer-events:auto}
+.ak-sheet{position:fixed;left:16px;right:16px;top:50%;max-width:440px;margin:0 auto;background:var(--card);border-radius:20px;padding:22px 22px 20px;transform:translate(0,-40%) scale(.9);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.22,.61,.36,1);z-index:71;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.ak-sheet.show{transform:translate(0,-50%) scale(1);opacity:1;pointer-events:auto}
+.ak-sheet h3{font-size:17px;font-weight:700;margin-bottom:4px;text-align:center}
+.ak-sheet .sub{font-size:12px;color:var(--text-3);text-align:center;line-height:1.5;margin-bottom:18px}
+.ak-sheet .sub a{color:var(--brand);text-decoration:none}
+.ak-sheet .field{margin-bottom:14px}
+.ak-sheet .field label{display:block;font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.3px;margin-bottom:6px;text-transform:uppercase}
+.ak-sheet input,.ak-sheet select{width:100%;background:var(--bg);border:1.5px solid transparent;border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);outline:none;font-family:inherit;-webkit-appearance:none;appearance:none}
+.ak-sheet input:focus,.ak-sheet select:focus{border-color:var(--brand);background:var(--card)}
+.ak-sheet .status{font-size:12px;padding:10px 12px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ak-sheet .status.ok{background:var(--accent-soft);color:var(--accent)}
+.ak-sheet .status.off{background:var(--bg);color:var(--text-3)}
+.ak-sheet .status.err{background:#ff3b301a;color:var(--danger)}
+.ak-sheet .btns{display:flex;gap:8px;margin-top:4px}
+.ak-sheet .btns button{flex:1;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer}
+.ak-sheet .btns .cancel{background:var(--bg);color:var(--text-2)}
+.ak-sheet .btns .save{background:var(--brand);color:#fff;flex:1.3}
+.ak-sheet .btns .save:active{opacity:.85}
+.ak-sheet .clear-link{text-align:center;margin-top:10px;padding:6px}
+.ak-sheet .clear-link button{background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer;opacity:.75}
 .ps-fab{position:fixed;right:14px;bottom:calc(var(--safe-bot) + 86px);width:60px;height:60px;border-radius:50%;background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);z-index:49;cursor:pointer;opacity:0;transform:scale(.5) translateY(20px);pointer-events:none;transition:transform .28s cubic-bezier(.22,1.4,.36,1),opacity .2s;display:flex;align-items:center;justify-content:center}
 .ps-fab.show{opacity:1;transform:scale(1) translateY(0);pointer-events:auto}
 .ps-fab.show:active{transform:scale(.94)}
@@ -697,7 +721,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
           <button class="play-btn" onclick="toast('计时器已运行')">▶</button>
         </div>
         <div class="head-actions">
-          <button class="ai-chip" onclick="toast('AI 教练：分析你的训练中')">
+          <button class="ai-chip" onclick="openApiKeyDialog()">
             <span class="kitty">✨</span>喵喵AI
           </button>
           <button class="finish" onclick="finishSession()">完成</button>
@@ -926,6 +950,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="badge">AI</div>
   </div>
 
+  <!-- ============= API Key 设置弹窗 ============= -->
+  <div class="ak-mask" id="ak-mask" onclick="closeApiKeyDialog()"></div>
+  <div class="ak-sheet" id="ak-sheet">
+    <h3>🐱 喵喵 AI 设置</h3>
+    <div class="sub">
+      接入通义千问 Qwen 提供真实 AI 分析<br>
+      <a href="https://bailian.console.aliyun.com/?apiKey=1#/api-key" target="_blank">点这里免费申请 API Key ›</a>
+    </div>
+
+    <div class="status" id="ak-status">
+      <span id="ak-status-icon">🔘</span>
+      <span id="ak-status-text">未配置，当前使用离线规则</span>
+    </div>
+
+    <div class="field">
+      <label>API Key</label>
+      <input type="password" id="ak-input" placeholder="sk-xxxxxxxxxxxxxxxxxx" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label>模型</label>
+      <select id="ak-model">
+        <option value="qwen-turbo">qwen-turbo · 最快 · 最便宜（推荐）</option>
+        <option value="qwen-plus">qwen-plus · 平衡</option>
+        <option value="qwen-max">qwen-max · 最强 · 最慢</option>
+      </select>
+    </div>
+
+    <div class="btns">
+      <button class="cancel" onclick="closeApiKeyDialog()">取消</button>
+      <button class="save" onclick="saveApiKey()">保存并测试</button>
+    </div>
+
+    <div class="clear-link">
+      <button onclick="clearApiKey()">清除 Key，改用离线规则</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast">OK</div>
 </div>
 
@@ -1012,6 +1074,18 @@ function renderCalGrid(){
 function segEx(el,k){el.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));el.classList.add('on')}
 
 /* ============== session ============== */
+function updateAiChip(){
+  const chip = document.querySelector('.sess-head .ai-chip');
+  if(!chip) return;
+  if(getApiKey()){
+    chip.classList.remove('off');
+    chip.innerHTML = '<span class="kitty">✨</span>喵喵AI';
+  } else {
+    chip.classList.add('off');
+    chip.innerHTML = '<span class="kitty">💤</span>喵喵AI';
+  }
+}
+
 function startSession(mode){
   S.session={
     title: mode==='empty'?'空训练':'胸',
@@ -1022,6 +1096,7 @@ function startSession(mode){
   if(S.woTimer)clearInterval(S.woTimer);
   S.woTimer=setInterval(updateSessTimer,1000);
   renderSession();
+  updateAiChip();
   $('sess').classList.add('show');
 }
 function updateSessTimer(){
@@ -1330,7 +1405,7 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
   recomputeAI();
 }));
 
-/* ============== AI 抽象接口（后续接真实 LLM 的唯一入口） ============== */
+/* ============== AI 抽象接口（真实 LLM + 规则引擎兜底） ============== */
 /*
   输入 ctx = {
     exercise: {name, target:{w,r}, history, sets},
@@ -1347,9 +1422,192 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
   }
 */
 async function generateAIFeedback(ctx){
-  // TODO: 接入真实 LLM API（DeepSeek / 通义千问 / ChatGPT）
-  // 当前使用本地规则引擎兜底，保证离线和响应速度
+  const apiKey = getApiKey();
+  if(apiKey){
+    try {
+      return await qwenFeedback(ctx, apiKey);
+    } catch(e) {
+      console.warn('[AI] Qwen 调用失败，降级规则引擎:', e);
+      const fallback = ruleBasedFeedback(ctx);
+      fallback.coachText = `<p style="color:var(--text-3);font-size:12px;margin-bottom:8px">⚠ AI 暂时不可用，使用离线分析</p>` + fallback.coachText;
+      return fallback;
+    }
+  }
   return ruleBasedFeedback(ctx);
+}
+
+/* ============== API Key 管理 ============== */
+const AK_STORAGE_KEY = 'repiq_qwen_apikey';
+const AK_MODEL_KEY = 'repiq_qwen_model';
+
+function getApiKey(){
+  try { return localStorage.getItem(AK_STORAGE_KEY) || '' } catch(e){ return '' }
+}
+function getModel(){
+  try { return localStorage.getItem(AK_MODEL_KEY) || 'qwen-turbo' } catch(e){ return 'qwen-turbo' }
+}
+
+function openApiKeyDialog(){
+  const key = getApiKey();
+  const model = getModel();
+  $('ak-input').value = key;
+  $('ak-model').value = model;
+  if(key){
+    $('ak-status').className = 'status ok';
+    $('ak-status-icon').textContent = '✓';
+    $('ak-status-text').textContent = `已接入真 AI（${model}）`;
+  } else {
+    $('ak-status').className = 'status off';
+    $('ak-status-icon').textContent = '🔘';
+    $('ak-status-text').textContent = '未配置，当前使用离线规则';
+  }
+  $('ak-mask').classList.add('show');
+  $('ak-sheet').classList.add('show');
+}
+
+function closeApiKeyDialog(){
+  $('ak-mask').classList.remove('show');
+  $('ak-sheet').classList.remove('show');
+}
+
+async function saveApiKey(){
+  const key = $('ak-input').value.trim();
+  const model = $('ak-model').value;
+  if(!key){
+    $('ak-status').className = 'status err';
+    $('ak-status-icon').textContent = '✗';
+    $('ak-status-text').textContent = '请填写 API Key';
+    return;
+  }
+  $('ak-status').className = 'status off';
+  $('ak-status-icon').textContent = '⟳';
+  $('ak-status-text').textContent = '正在测试连接…';
+
+  try {
+    await qwenPing(key, model);
+    try { localStorage.setItem(AK_STORAGE_KEY, key); localStorage.setItem(AK_MODEL_KEY, model) } catch(e){}
+    $('ak-status').className = 'status ok';
+    $('ak-status-icon').textContent = '✓';
+    $('ak-status-text').textContent = `接入成功（${model}）`;
+    updateAiChip();
+    setTimeout(()=>{closeApiKeyDialog();toast('✓ 真 AI 已上线')}, 800);
+  } catch(e) {
+    $('ak-status').className = 'status err';
+    $('ak-status-icon').textContent = '✗';
+    $('ak-status-text').textContent = '测试失败：' + (e.message || '未知错误');
+  }
+}
+
+function clearApiKey(){
+  try { localStorage.removeItem(AK_STORAGE_KEY) } catch(e){}
+  $('ak-input').value = '';
+  $('ak-status').className = 'status off';
+  $('ak-status-icon').textContent = '🔘';
+  $('ak-status-text').textContent = '已清除，回到离线规则';
+  updateAiChip();
+  toast('已切换到离线规则');
+}
+
+/* ============== Qwen API 调用（OpenAI 兼容模式） ============== */
+const QWEN_ENDPOINT = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+
+async function qwenPing(apiKey, model){
+  const resp = await fetch(QWEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model, messages: [{role:'user',content:'Hi'}], max_tokens: 5 })
+  });
+  if(!resp.ok){
+    const txt = await resp.text();
+    throw new Error(resp.status + ' ' + (txt.slice(0,80)));
+  }
+}
+
+function buildSystemPrompt(){
+  return `你是 RepIQ 的健身 AI 教练"喵喵"。你的任务：基于用户刚完成的一组训练数据，给出本组表现评价、下组建议重量/次数、以及合适的组间休息时长。
+
+【输出要求】严格按以下 JSON 格式返回（只返回 JSON，不要任何其他内容）：
+{
+  "restSec": 90,
+  "nextW": 95.0,
+  "nextR": 8,
+  "shortReason": "一句话重量调整理由（可含 HTML <b> 强调关键数字）",
+  "coachHtml": "2-4 段教练口吻分析（<p>...</p> 多段，用 <b> 强调关键词）"
+}
+
+【决策原则】
+- 动作标准程度 eff=1 (不太标准): 必须减重 5-10%
+- 动作标准程度 eff=2 (八成标准): 微幅加重或保持
+- 动作标准程度 eff=3 (非常标准) + RIR 3+: 加 5kg 或大幅进步
+- 动作标准程度 eff=3 + RIR 1-2: 加 1.25-2.5kg
+- RIR 0 (力竭): 保持重量
+- 休息时长：RIR 0 给 150s, RIR 1 给 120s, RIR 2 给 90s, RIR 3+ 给 60s；重量≥80kg 再 +15s
+
+【教练语气】
+- 中文，专业但不冰冷，像健身房里的朋友
+- 每段话开头可以用 emoji（🔥💪⚠️✓🎯）
+- 避免说"作为一个 AI"，直接用教练身份
+- 强调的关键数字/重点用 <b> 包起来
+- 2-4 段话，每段 1-2 句，不要超过 3 段`;
+}
+
+function buildUserMessage(ctx){
+  const {exercise, currentSet, feedback, sessionContext} = ctx;
+  const effTxt = feedback.eff===3?'非常标准':feedback.eff===2?'八成标准':'不太标准';
+  const rirTxt = feedback.rir===0?'力竭（一个都做不动）':feedback.rir===1?'还能做 1 个':feedback.rir===2?'还能做 2 个':'还很轻松（还能做 3+ 个）';
+  return `动作：${exercise.name}
+目标次数：${exercise.target.r}
+历史最佳：${exercise.history?`${exercise.history.w}kg × ${exercise.history.r}（RIR ${exercise.history.rir}）`:'—'}
+
+本组完成：${currentSet.w}kg × ${currentSet.r} 次
+动作标准：${effTxt}（eff=${feedback.eff}）
+剩余储备：${rirTxt}（RIR=${feedback.rir}）
+
+会话进度：${sessionContext?`${sessionContext.doneSets}/${sessionContext.totalSets} 组已完成，已训练 ${Math.round(sessionContext.elapsedSec/60)} 分钟`:'—'}
+
+请按 JSON 格式返回建议。`;
+}
+
+async function qwenFeedback(ctx, apiKey){
+  const model = getModel();
+  const resp = await fetch(QWEN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role:'system', content: buildSystemPrompt() },
+        { role:'user', content: buildUserMessage(ctx) }
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.6,
+      max_tokens: 600
+    })
+  });
+  if(!resp.ok){
+    const txt = await resp.text();
+    throw new Error(resp.status + ' ' + txt.slice(0,80));
+  }
+  const data = await resp.json();
+  const content = data.choices?.[0]?.message?.content || '{}';
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch(e) {
+    // 尝试从 ```json ... ``` 里抽
+    const m = content.match(/\{[\s\S]*\}/);
+    if(m) parsed = JSON.parse(m[0]);
+    else throw new Error('AI 返回格式错误');
+  }
+  const restSec = Math.max(30, Math.round((parsed.restSec || 90) / 5) * 5);
+  const nextW = Math.round((parsed.nextW || ctx.currentSet.w) * 2) / 2;
+  const nextR = Math.round(parsed.nextR || ctx.exercise.target.r);
+  const deltaW = nextW - ctx.currentSet.w;
+  return {
+    restSec, nextW, nextR, deltaW,
+    shortReason: parsed.shortReason || '',
+    coachText: parsed.coachHtml || '<p>分析完成</p>'
+  };
 }
 
 function ruleBasedFeedback(ctx){
@@ -1535,13 +1793,38 @@ function switchToConfirmedState(acceptedAI){
     $('ps-next-d').className='d';
   }
 
-  // 教练文本：模拟打字机效果
+  // 教练文本：根据是否用真 AI 显示不同 loading
   $('ai-typing').style.display='flex';
-  $('ai-coach-body').innerHTML='<p style="color:var(--text-3)">喵喵教练正在为你分析…</p>';
+  const usingReal = !!getApiKey();
+  $('ai-coach-body').innerHTML = usingReal
+    ? '<p style="color:var(--text-3)">喵喵教练正在思考…</p>'
+    : '<p style="color:var(--text-3)">喵喵教练正在为你分析…</p>';
   setTimeout(()=>{
     $('ai-typing').style.display='none';
-    $('ai-coach-body').innerHTML=PS.aiCoachText || '<p>状态分析完成，继续保持。</p>';
-  }, 700);
+    typewriterCoach(PS.aiCoachText || '<p>状态分析完成，继续保持。</p>');
+  }, usingReal ? 300 : 700);
+}
+
+/* 简易"打字机"效果：整段淡入 + 字节分段显示 */
+function typewriterCoach(html){
+  const target = $('ai-coach-body');
+  // 简单版：按 <p> 分段，每段延时显示
+  const parts = html.split(/(?=<p)/).filter(Boolean);
+  target.innerHTML = '';
+  let idx = 0;
+  function addNext(){
+    if(idx >= parts.length) return;
+    const div = document.createElement('div');
+    div.innerHTML = parts[idx];
+    div.style.opacity = '0';
+    div.style.transform = 'translateY(4px)';
+    div.style.transition = 'opacity .3s, transform .3s';
+    target.appendChild(div);
+    requestAnimationFrame(()=>{div.style.opacity='1';div.style.transform='translateY(0)'});
+    idx++;
+    setTimeout(addNext, 280);
+  }
+  addNext();
 }
 
 function psKeepOriginal(){
