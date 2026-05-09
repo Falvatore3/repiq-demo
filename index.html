@@ -296,6 +296,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-label{font-size:12px;color:var(--text-3);margin:12px 0 8px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 .ps-label .req{color:var(--danger);font-size:14px}
 
+/* 输入态 section：可隐藏 */
+.ps-inputs{transition:all .35s cubic-bezier(.22,.61,.36,1);overflow:hidden;max-height:600px;opacity:1}
+.ps-sheet.confirmed .ps-inputs{max-height:0;opacity:0;margin:0;padding:0;pointer-events:none}
+
+/* 确认后的折叠摘要条 */
+.ps-summary{display:none;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 14px;margin-top:12px;cursor:pointer;transition:background .15s}
+.ps-sheet.confirmed .ps-summary{display:flex}
+.ps-summary:active{background:var(--border)}
+.ps-summary .ico{font-size:16px;line-height:1;flex-shrink:0}
+.ps-summary .t{flex:1;font-size:13px;color:var(--text-2);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ps-summary .t b{color:var(--text);font-weight:700}
+.ps-summary .edit{font-size:12px;color:var(--brand);font-weight:600;flex-shrink:0}
+
 .ps-effort{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ps-effort .o{background:var(--bg);border:1.5px solid transparent;border-radius:12px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:all .15s}
 .ps-effort .o .emo{font-size:24px;line-height:1;margin-bottom:4px}
@@ -311,8 +324,59 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-rir .o.sel{background:var(--brand-soft);border-color:var(--brand)}
 .ps-rir .o.sel .n{color:var(--brand)}
 
+/* ========== 确认后的强调区：大号倒计时 + AI 文本 + 下组卡 ========== */
+.ps-hero{display:none;margin-top:14px}
+.ps-sheet.confirmed .ps-hero{display:block}
+
+.ps-hero-timer{background:linear-gradient(135deg,#007aff08,#007aff03);border:1px solid var(--brand-soft);border-radius:18px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+.ps-hero-timer.ai{background:linear-gradient(135deg,var(--ai-soft),#ff6b3506);border-color:var(--ai-line)}
+.ps-hero-timer .ring-big{width:84px;height:84px;position:relative;flex-shrink:0}
+.ps-hero-timer .ring-big svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ps-hero-timer .ring-big .trk{fill:none;stroke:var(--border);stroke-width:5}
+.ps-hero-timer .ring-big .fll{fill:none;stroke:var(--brand);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.ps-hero-timer.ai .ring-big .fll{stroke:var(--ai)}
+.ps-hero-timer .ring-big .txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ps-hero-timer .ring-big .txt .big{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px;color:var(--text)}
+.ps-hero-timer .ring-big .txt .s{font-size:9px;color:var(--text-3);margin-top:2px;font-weight:600;letter-spacing:.5px}
+.ps-hero-timer .info{flex:1;min-width:0}
+.ps-hero-timer .info .lbl{font-size:11px;color:var(--text-3);letter-spacing:1.2px;font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.ps-hero-timer .info .big-time{font-size:32px;font-weight:700;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;line-height:1;color:var(--text)}
+.ps-hero-timer .info .big-time .tot{font-size:13px;color:var(--text-3);font-weight:500;margin-left:6px}
+.ps-hero-timer .info .ctls{display:flex;gap:6px;margin-top:8px}
+.ps-hero-timer .info .ctls button{background:var(--card);border:none;color:var(--text-2);font-size:12px;font-weight:700;padding:6px 10px;border-radius:7px;cursor:pointer}
+.ps-hero-timer .info .ctls button:active{background:var(--brand);color:#fff}
+
+.ai-coach{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:12px;position:relative}
+.ai-coach .hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-coach .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#5ac8fa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.ai-coach .nm{font-size:13px;font-weight:700;color:var(--text)}
+.ai-coach .tag{background:var(--ai-soft);color:var(--ai);padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.ai-coach .typing{font-size:11px;color:var(--text-3);margin-left:auto;display:flex;align-items:center;gap:3px}
+.ai-coach .typing .dots{display:inline-flex;gap:2px}
+.ai-coach .typing .dots span{width:4px;height:4px;border-radius:50%;background:var(--text-3);animation:bounce 1.3s infinite}
+.ai-coach .typing .dots span:nth-child(2){animation-delay:.15s}
+.ai-coach .typing .dots span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-3px);opacity:1}}
+.ai-coach .body{font-size:15px;line-height:1.6;color:var(--text);letter-spacing:.2px}
+.ai-coach .body b{color:var(--ai);font-weight:700}
+.ai-coach .body p{margin-bottom:6px}
+.ai-coach .body p:last-child{margin-bottom:0}
+
+.ps-next-card{background:var(--card);border:1.5px solid var(--ai-line);border-radius:14px;padding:14px 16px;margin-bottom:4px;display:flex;align-items:center;gap:14px;position:relative}
+.ps-next-card::before{content:'AI';position:absolute;top:10px;right:12px;background:var(--ai);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;letter-spacing:.5px}
+.ps-next-card .arrow{width:32px;height:32px;border-radius:50%;background:var(--ai-soft);color:var(--ai);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.ps-next-card .info{flex:1;min-width:0}
+.ps-next-card .info .l{font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.5px;margin-bottom:3px}
+.ps-next-card .info .v{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text);font-variant-numeric:tabular-nums}
+.ps-next-card .info .v .u{font-size:13px;color:var(--text-3);font-weight:500;margin:0 2px}
+.ps-next-card .info .d{font-size:11px;color:var(--text-3);margin-top:2px}
+.ps-next-card .info .d.up{color:var(--accent)}
+.ps-next-card .info .d.down{color:var(--danger)}
+
+/* 原 AI 块（输入态下作为"填完显示"） */
 .ps-ai{background:linear-gradient(135deg,var(--ai-soft),#ff6b3506);border:1px solid var(--ai-line);border-radius:14px;padding:12px 14px 11px;margin-top:14px;position:relative;opacity:.55;pointer-events:none;transition:opacity .25s}
 .ps-ai.ready{opacity:1;pointer-events:auto}
+.ps-sheet.confirmed .ps-ai{display:none}
 .ps-ai .hd{display:flex;align-items:center;gap:6px;margin-bottom:10px}
 .ps-ai .hd .dot{width:7px;height:7px;border-radius:50%;background:var(--ai);animation:pulse 1.4s infinite}
 .ps-ai .hd .t{font-size:11px;font-weight:700;color:var(--ai);letter-spacing:1px;text-transform:uppercase}
@@ -337,6 +401,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-actions .accept.done{background:var(--accent);box-shadow:0 4px 12px var(--accent-soft)}
 .ps-actions .accept:active,.ps-actions .keep:active{opacity:.85}
 .ps-actions .accept[disabled]{opacity:.4;box-shadow:none;pointer-events:none}
+/* 确认后按钮样式简化 */
+.ps-sheet.confirmed .ps-actions{margin-top:10px}
+.ps-sheet.confirmed .ps-actions .accept{display:none}
+.ps-sheet.confirmed .ps-actions .keep{background:var(--brand);color:#fff;flex:1;font-weight:700;padding:14px}
 
 /* ===== FAB 悬浮球 ===== */
 .ps-fab{position:fixed;right:14px;bottom:calc(var(--safe-bot) + 86px);width:60px;height:60px;border-radius:50%;background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);z-index:49;cursor:pointer;opacity:0;transform:scale(.5) translateY(20px);pointer-events:none;transition:transform .28s cubic-bezier(.22,1.4,.36,1),opacity .2s;display:flex;align-items:center;justify-content:center}
@@ -732,44 +800,99 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <span class="val"><b id="ps-set-w">100</b>kg × <b id="ps-set-r">2</b></span>
     </div>
 
-    <div class="ps-label">动作标准程度 <span class="req">*</span></div>
-    <div class="ps-effort" id="ps-effort">
-      <div class="o" data-eff="3"><div class="emo">🎯</div><div class="t">非常标准</div><div class="s">全程到位</div></div>
-      <div class="o" data-eff="2"><div class="emo">👌</div><div class="t">八成标准</div><div class="s">稍有代偿</div></div>
-      <div class="o" data-eff="1"><div class="emo">⚠️</div><div class="t">不太标准</div><div class="s">明显变形</div></div>
+    <!-- 输入态：选完两项后隐藏 -->
+    <div class="ps-inputs" id="ps-inputs">
+      <div class="ps-label">动作标准程度 <span class="req">*</span></div>
+      <div class="ps-effort" id="ps-effort">
+        <div class="o" data-eff="3"><div class="emo">🎯</div><div class="t">非常标准</div><div class="s">全程到位</div></div>
+        <div class="o" data-eff="2"><div class="emo">👌</div><div class="t">八成标准</div><div class="s">稍有代偿</div></div>
+        <div class="o" data-eff="1"><div class="emo">⚠️</div><div class="t">不太标准</div><div class="s">明显变形</div></div>
+      </div>
+
+      <div class="ps-label">还能再做几个 <span class="req">*</span></div>
+      <div class="ps-rir" id="ps-rir">
+        <div class="o" data-rir="0"><div class="n">0</div><div class="s">一个都不</div></div>
+        <div class="o" data-rir="1"><div class="n">1</div><div class="s">还能1个</div></div>
+        <div class="o" data-rir="2"><div class="n">2</div><div class="s">还能2个</div></div>
+        <div class="o" data-rir="3"><div class="n">3+</div><div class="s">还很轻松</div></div>
+      </div>
+
+      <div class="ps-ai" id="ps-ai">
+        <div class="hd">
+          <div class="dot"></div>
+          <div class="t">AI 实时建议</div>
+          <div class="loading" id="ps-ai-loading">填完两项我来算</div>
+        </div>
+        <div class="ps-ai-grid">
+          <div class="ps-ai-cell">
+            <div class="l">建议休息</div>
+            <div class="v"><span id="ps-ai-rest">—</span><span class="u">s</span></div>
+            <div class="d" id="ps-ai-rest-d">—</div>
+          </div>
+          <div class="ps-ai-cell">
+            <div class="l">下组重量 × 次数</div>
+            <div class="v"><span id="ps-ai-nw">—</span><span class="u">kg × <span id="ps-ai-nr">—</span></span></div>
+            <div class="d" id="ps-ai-nw-d">—</div>
+          </div>
+        </div>
+        <div class="ps-ai-reason" id="ps-ai-reason">填写完毕后，AI 会根据你的表现给出个性化建议。</div>
+      </div>
     </div>
 
-    <div class="ps-label">还能再做几个 <span class="req">*</span></div>
-    <div class="ps-rir" id="ps-rir">
-      <div class="o" data-rir="0"><div class="n">0</div><div class="s">一个都不</div></div>
-      <div class="o" data-rir="1"><div class="n">1</div><div class="s">还能1个</div></div>
-      <div class="o" data-rir="2"><div class="n">2</div><div class="s">还能2个</div></div>
-      <div class="o" data-rir="3"><div class="n">3+</div><div class="s">还很轻松</div></div>
+    <!-- 确认后折叠摘要（点击展开可改） -->
+    <div class="ps-summary" id="ps-summary" onclick="psReopenInputs()">
+      <div class="ico" id="ps-sum-emo">🎯</div>
+      <div class="t" id="ps-sum-text">已标记：<b>非常标准</b> · 还能做 <b>2</b> 个</div>
+      <div class="edit">修改 ›</div>
     </div>
 
-    <div class="ps-ai" id="ps-ai">
-      <div class="hd">
-        <div class="dot"></div>
-        <div class="t">AI 实时建议</div>
-        <div class="loading" id="ps-ai-loading">填完两项我来算</div>
-      </div>
-      <div class="ps-ai-grid">
-        <div class="ps-ai-cell">
-          <div class="l">建议休息</div>
-          <div class="v"><span id="ps-ai-rest">—</span><span class="u">s</span></div>
-          <div class="d" id="ps-ai-rest-d">—</div>
+    <!-- 输出态：强调区（倒计时 + AI 教练文本 + 下组卡） -->
+    <div class="ps-hero" id="ps-hero">
+      <div class="ps-hero-timer ai" id="ps-hero-timer">
+        <div class="ring-big">
+          <svg viewBox="0 0 100 100">
+            <circle class="trk" cx="50" cy="50" r="44"/>
+            <circle class="fll" id="ps-hero-fill" cx="50" cy="50" r="44" stroke-dasharray="276.5" stroke-dashoffset="0"/>
+          </svg>
+          <div class="txt">
+            <div class="big" id="ps-hero-inner">1:30</div>
+            <div class="s">组间</div>
+          </div>
         </div>
-        <div class="ps-ai-cell">
-          <div class="l">下组重量 × 次数</div>
-          <div class="v"><span id="ps-ai-nw">—</span><span class="u">kg × <span id="ps-ai-nr">—</span></span></div>
-          <div class="d" id="ps-ai-nw-d">—</div>
+        <div class="info">
+          <div class="lbl">AI 建议休息</div>
+          <div class="big-time"><span id="ps-hero-time">1:30</span><span class="tot">/<span id="ps-hero-tot">1:30</span></span></div>
+          <div class="ctls">
+            <button onclick="psRestAdd(-15)">−15s</button>
+            <button onclick="psRestAdd(15)">+15s</button>
+          </div>
         </div>
       </div>
-      <div class="ps-ai-reason" id="ps-ai-reason">填写完毕后，AI 会根据你的表现给出个性化建议。</div>
+
+      <div class="ai-coach" id="ai-coach">
+        <div class="hd">
+          <div class="avatar">🐱</div>
+          <div class="nm">喵喵教练</div>
+          <div class="tag">AI 分析</div>
+          <div class="typing" id="ai-typing"><span>分析中</span><span class="dots"><span></span><span></span><span></span></span></div>
+        </div>
+        <div class="body" id="ai-coach-body">
+          <p>正在根据你的训练状态、动作质量、历史 PR 综合分析…</p>
+        </div>
+      </div>
+
+      <div class="ps-next-card">
+        <div class="arrow">→</div>
+        <div class="info">
+          <div class="l">下组建议</div>
+          <div class="v"><span id="ps-next-w">—</span><span class="u">kg ×</span><span id="ps-next-r">—</span></div>
+          <div class="d" id="ps-next-d">—</div>
+        </div>
+      </div>
     </div>
 
     <div class="ps-actions">
-      <button class="keep" onclick="psKeepOriginal()">按原计划</button>
+      <button class="keep" id="ps-keep" onclick="psKeepOriginal()">按原计划</button>
       <button class="accept" id="ps-accept" disabled onclick="psAcceptAI()">接受 AI 建议</button>
     </div>
   </div>
@@ -1044,6 +1167,7 @@ function openPostSet(ei,si){
   $('ps-accept').disabled=true;
   $('ps-accept').classList.remove('done');
   $('ps-accept').textContent='接受 AI 建议';
+  $('ps-keep').textContent='按原计划';
   $('ps-ai-loading').textContent='填完两项我来算';
   $('ps-ai-rest').textContent='—';
   $('ps-ai-nw').textContent='—';
@@ -1051,8 +1175,11 @@ function openPostSet(ei,si){
   $('ps-ai-rest-d').textContent='—';$('ps-ai-rest-d').className='d';
   $('ps-ai-nw-d').textContent='—';$('ps-ai-nw-d').className='d';
   $('ps-ai-reason').innerHTML='填写完毕后，AI 会根据你的表现给出个性化建议。';
+  $('ps-sheet').classList.remove('confirmed');
   $('ps-ring').classList.remove('ai');
   $('ps-fab').classList.remove('ai','has-ai');
+  $('ai-coach-body').innerHTML='<p>正在根据你的训练状态、动作质量、历史 PR 综合分析…</p>';
+  $('ai-typing').style.display='flex';
 
   updatePSTime();
   $('ps-mask').classList.add('show');
@@ -1081,6 +1208,13 @@ function updatePSTime(){
   const circ=106.8;
   const ratio=left/PS.totalRest;
   $('ps-ring-fill').style.strokeDashoffset=circ*(1-ratio);
+  // hero timer 同步
+  if($('ps-hero-inner')){
+    $('ps-hero-inner').textContent=disp;
+    $('ps-hero-time').textContent=disp;
+    $('ps-hero-tot').textContent=`${tm}:${ts}`;
+    $('ps-hero-fill').style.strokeDashoffset=276.5*(1-ratio);
+  }
   // FAB 同步
   $('ps-fab-sec').textContent=left<60?left:`${m}:${sec}`;
   const fabCirc=163.4;
@@ -1139,102 +1273,242 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
   recomputeAI();
 }));
 
-/* ============== AI 实时重算（核心算法） ==============
-   eff：3=非常标准  2=八成标准  1=不太标准
-   rir：0/1/2/3+  （3+ 表示还很轻松）
+/* ============== AI 抽象接口（后续接真实 LLM 的唯一入口） ============== */
+/*
+  输入 ctx = {
+    exercise: {name, target:{w,r}, history, sets},
+    currentSet: {w, r, idx},
+    feedback: {eff, rir},          // eff: 3=非常标准 2=八成 1=不太
+    sessionContext: {totalSets, doneSets, totalVol, doneVol, elapsedSec}
+  }
+  输出 {
+    restSec: number,
+    nextW: number, nextR: number,
+    coachText: string(html),       // AI 教练对当前状态的多句分析
+    shortReason: string(html),     // 一句话理由
+    deltaW: number                 // nextW - currentSet.w
+  }
 */
-function recomputeAI(){
+async function generateAIFeedback(ctx){
+  // TODO: 接入真实 LLM API（DeepSeek / 通义千问 / ChatGPT）
+  // 当前使用本地规则引擎兜底，保证离线和响应速度
+  return ruleBasedFeedback(ctx);
+}
+
+function ruleBasedFeedback(ctx){
+  const {exercise, currentSet, feedback} = ctx;
+  const {eff, rir} = feedback;
+  const s = currentSet;
+  const tgt = exercise.target.r;
+
+  let nw=s.w, nr=tgt, wDelta=0, shortReason='', coachText='';
+
+  /* 下组重量决策 */
+  if(eff===1){
+    nw=Math.max(10,Math.round(s.w*0.9*2)/2);wDelta=nw-s.w;
+    shortReason=`动作已明显变形，<b>减重 ${Math.abs(wDelta)}kg</b> 练动作模式`;
+  } else if(eff===2 && rir>=3){
+    nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
+    shortReason=`动作基本到位且还有余力，<b>加 2.5kg</b>`;
+  } else if(eff===2){
+    nw=s.w;wDelta=0;
+    shortReason=rir===0?`接近力竭+代偿，<b>保持 ${s.w}kg</b>`:`状态可接受，<b>保持 ${s.w}kg</b>`;
+  } else if(eff===3 && rir>=3){
+    nw=Math.round((s.w+5)*2)/2;wDelta=5;
+    shortReason=`动作标准且还剩余力，<b>直接加 5kg</b>`;
+  } else if(eff===3 && rir===2){
+    nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
+    shortReason=`动作标准、状态不错，<b>加 2.5kg</b>`;
+  } else if(eff===3 && rir===1){
+    nw=Math.round((s.w+1.25)*2)/2;wDelta=1.25;
+    shortReason=`标准完成、接近力竭，<b>小增 1.25kg</b>`;
+  } else {
+    nw=s.w;wDelta=0;
+    shortReason=`力竭到 RIR 0 但动作标准，<b>保持 ${s.w}kg</b>`;
+  }
+
+  /* 休息时长决策 */
+  let rest=90;
+  if(rir===0) rest=150;
+  else if(rir===1) rest=120;
+  else if(rir===2) rest=90;
+  else rest=60;
+  if(eff===1) rest+=15;
+  if(s.w>=80) rest+=15;
+  rest=Math.round(rest/5)*5;
+
+  /* 生成教练文本（3-4 句话） */
+  coachText = buildCoachText({exercise, currentSet:s, eff, rir, nw, rest, wDelta, sessionContext:ctx.sessionContext});
+
+  return {restSec:rest, nextW:nw, nextR:nr, coachText, shortReason, deltaW:wDelta};
+}
+
+function buildCoachText({exercise, currentSet, eff, rir, nw, rest, wDelta, sessionContext}){
+  const s = currentSet;
+  const sessPct = sessionContext? Math.round(sessionContext.doneSets/sessionContext.totalSets*100) : 0;
+  const lines = [];
+
+  /* 第 1 句：本组表现定性 */
+  if(eff===3 && rir>=3){
+    lines.push(`🔥 这组做得<b>非常漂亮</b>，${s.w}kg × ${s.r} 还剩 3+ 次储备，状态在线`);
+  } else if(eff===3 && rir<=1){
+    lines.push(`💪 动作标准又接近力竭，${s.w}kg × ${s.r} 这组<b>质量和强度都到位</b>`);
+  } else if(eff===2 && rir===0){
+    lines.push(`⚠️ ${s.w}kg × ${s.r} 已经力竭，动作开始有代偿，<b>该换思路了</b>`);
+  } else if(eff===1){
+    lines.push(`🛑 动作明显变形了，说明这个重量<b>已经超过当前动作能力</b>`);
+  } else if(eff===2 && rir>=2){
+    lines.push(`👌 ${s.w}kg × ${s.r} 完成质量不错，还有小余力`);
+  } else {
+    lines.push(`✓ 这组 ${s.w}kg × ${s.r} 稳定完成`);
+  }
+
+  /* 第 2 句：休息时长解释 */
+  if(rest >= 150){
+    lines.push(`力竭组需要更长恢复，建议休息 <b>${rest}s</b>（+${rest-90}s），让 ATP-CP 供能系统恢复`);
+  } else if(rest >= 120){
+    lines.push(`接近力竭，建议休息 <b>${rest}s</b> 再上`);
+  } else if(rest <= 60){
+    lines.push(`状态很好可以快速推进，休息 <b>${rest}s</b> 保持密度`);
+  } else {
+    lines.push(`标准休息 <b>${rest}s</b>，足够神经恢复`);
+  }
+
+  /* 第 3 句：下组建议 */
+  if(wDelta > 2){
+    lines.push(`下组<b>加到 ${nw}kg</b>，趁状态好渐进超负荷`);
+  } else if(wDelta > 0){
+    lines.push(`下组<b>小加 ${wDelta}kg 到 ${nw}kg</b>，保守推进`);
+  } else if(wDelta < 0){
+    lines.push(`下组<b>降到 ${nw}kg</b>，优先把动作做对，重量是结果不是目标`);
+  } else {
+    lines.push(`下组继续 <b>${nw}kg</b>，追求同样次数或多做 1 次`);
+  }
+
+  /* 第 4 句：会话进度（可选） */
+  if(sessionContext && sessPct >= 60){
+    lines.push(`本次已完成 ${sessionContext.doneSets}/${sessionContext.totalSets} 组（${sessPct}%），坚持一下`);
+  }
+
+  return lines.map(l=>`<p>${l}</p>`).join('');
+}
+
+/* ============== 选择回调：触发 recompute ============== */
+async function recomputeAI(){
   if(PS.eff===null || PS.rir===null){
     $('ps-ai-loading').textContent='再填一项就能算';
     return;
   }
   $('ps-ai-loading').textContent='AI 计算中…';
 
-  setTimeout(()=>{
-    const ex=S.session.exercises[PS.ei];
-    const s=ex.sets[PS.si];
-    const tgt=ex.target.r;
+  const ex = S.session.exercises[PS.ei];
+  const s = ex.sets[PS.si];
+  // 汇总 session 上下文
+  let totalSets=0, doneSets=0, totalVol=0, doneVol=0;
+  S.session.exercises.forEach(e=>{
+    totalSets += e.sets.length;
+    e.sets.forEach(st=>{if(st){doneSets++;doneVol+=st.w*st.r}});
+    totalVol += e.targetVol||0;
+  });
 
-    let nw=s.w, nr=tgt, wDelta=0, reason='';
+  const ctx = {
+    exercise: {name:ex.name, target:ex.target, history:ex.history, sets:ex.sets},
+    currentSet: {w:s.w, r:s.r, idx:PS.si},
+    feedback: {eff:PS.eff, rir:PS.rir},
+    sessionContext: {totalSets, doneSets, totalVol, doneVol, elapsedSec:Math.floor((Date.now()-S.woStart)/1000)}
+  };
 
-    /* 决策：下组重量 × 次数 */
-    if(PS.eff===1){
-      // 动作不标准：必须减重
-      nw=Math.max(10,Math.round(s.w*0.9*2)/2);wDelta=nw-s.w;
-      reason=`动作已明显变形，<b>减重 ${Math.abs(wDelta)}kg</b> 练动作模式，比盲目加重更重要`;
-    } else if(PS.eff===2 && PS.rir>=3){
-      // 八成标准 + 还很轻松 → 小幅加
-      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
-      reason=`动作基本到位且还有余力，<b>加 2.5kg</b> 同时注意动作质量`;
-    } else if(PS.eff===2){
-      // 八成标准 + RIR 0-2 → 保持
-      nw=s.w;wDelta=0;
-      reason=PS.rir===0?`已接近力竭且动作有代偿，<b>保持 ${s.w}kg</b>，下组专注动作质量`:`状态可接受，<b>保持 ${s.w}kg</b> 巩固当前水平`;
-    } else if(PS.eff===3 && PS.rir>=3){
-      // 非常标准 + 还很轻松 → 激进加
-      nw=Math.round((s.w+5)*2)/2;wDelta=5;
-      reason=`动作非常标准且还剩 3+ 次储备，<b>直接加 5kg</b>，状态好别浪费`;
-    } else if(PS.eff===3 && PS.rir===2){
-      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
-      reason=`动作标准、状态不错，<b>加 2.5kg</b> 继续渐进超负荷`;
-    } else if(PS.eff===3 && PS.rir===1){
-      nw=Math.round((s.w+1.25)*2)/2;wDelta=1.25;
-      reason=`标准完成、接近力竭，<b>小增 1.25kg</b> 保持挑战`;
-    } else {
-      // eff=3 & rir=0 → 力竭
-      nw=s.w;wDelta=0;
-      reason=`力竭到 RIR 0 但动作标准，<b>保持 ${s.w}kg</b>，下次再冲 PR`;
-    }
+  setTimeout(async ()=>{
+    const result = await generateAIFeedback(ctx);
+    PS.aiRest=result.restSec;
+    PS.aiW=result.nextW;
+    PS.aiR=result.nextR;
+    PS.aiReason=result.shortReason;
+    PS.aiCoachText=result.coachText;
 
-    /* 决策：休息时长 */
-    let rest=90;
-    if(PS.rir===0) rest=150;                 // 力竭 → 长休
-    else if(PS.rir===1) rest=120;
-    else if(PS.rir===2) rest=90;
-    else rest=60;                            // RIR 3+ → 短休加强密度
-    if(PS.eff===1) rest+=15;                 // 动作不标准 → 多休息冷静
-    if(s.w>=80) rest+=15;                    // 绝对重量大加 15s
-    rest=Math.round(rest/5)*5;               // 取整到 5 秒
-
-    PS.aiRest=rest;PS.aiW=nw;PS.aiR=nr;PS.aiReason=reason;
-
+    /* 更新输入态小卡片（未确认前看） */
     $('ps-ai').classList.add('ready');
     $('ps-ai-loading').textContent='✓ 已分析';
-    $('ps-ai-rest').textContent=rest;
-    $('ps-ai-nw').textContent=nw;
-    $('ps-ai-nr').textContent=nr;
+    $('ps-ai-rest').textContent=result.restSec;
+    $('ps-ai-nw').textContent=result.nextW;
+    $('ps-ai-nr').textContent=result.nextR;
 
-    const restDelta=rest-90;
+    const restDelta=result.restSec-90;
     if(restDelta>0){$('ps-ai-rest-d').textContent=`+${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d down'}
     else if(restDelta<0){$('ps-ai-rest-d').textContent=`${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d up'}
     else{$('ps-ai-rest-d').textContent='标准 90s';$('ps-ai-rest-d').className='d'}
 
-    if(wDelta>0){$('ps-ai-nw-d').textContent=`↑ +${wDelta}kg`;$('ps-ai-nw-d').className='d up'}
-    else if(wDelta<0){$('ps-ai-nw-d').textContent=`↓ ${wDelta}kg`;$('ps-ai-nw-d').className='d down'}
+    if(result.deltaW>0){$('ps-ai-nw-d').textContent=`↑ +${result.deltaW}kg`;$('ps-ai-nw-d').className='d up'}
+    else if(result.deltaW<0){$('ps-ai-nw-d').textContent=`↓ ${result.deltaW}kg`;$('ps-ai-nw-d').className='d down'}
     else{$('ps-ai-nw-d').textContent=`保持 ${s.w}kg`;$('ps-ai-nw-d').className='d'}
 
-    $('ps-ai-reason').innerHTML=reason;
+    $('ps-ai-reason').innerHTML=result.shortReason;
     $('ps-accept').disabled=false;
 
-    /* 自动调整倒计时（按 AI 建议，保留已流逝部分） */
+    /* 自动调整倒计时 */
     const elapsed=PS.totalRest-PS.leftRest;
-    PS.totalRest=rest;
-    PS.leftRest=Math.max(3,rest-elapsed);
+    PS.totalRest=result.restSec;
+    PS.leftRest=Math.max(3,result.restSec-elapsed);
     $('ps-ring').classList.add('ai');
     $('ps-fab').classList.add('ai','has-ai');
     updatePSTime();
   },450);
 }
 
-/* ============== 确认按钮 ==============
-   关键：接受 AI 不关闭弹窗，仅把下组替换 + 按钮变成"已接受 ✓"
-*/
+/* ============== 确认按钮：切换到输出强调态 ============== */
+function switchToConfirmedState(acceptedAI){
+  const effTxt=PS.eff===3?'非常标准':PS.eff===2?'八成标准':'不太标准';
+  const effEmo=PS.eff===3?'🎯':PS.eff===2?'👌':'⚠️';
+  const rirTxt=PS.rir===3?'3+ 个':`${PS.rir} 个`;
+
+  $('ps-sheet').classList.add('confirmed');
+  $('ps-sum-emo').textContent=effEmo;
+  $('ps-sum-text').innerHTML=`已标记：<b>${effTxt}</b> · 还能做 <b>${rirTxt}</b>`;
+
+  // 填充 hero 区
+  $('ps-next-w').textContent=PS.aiW;
+  $('ps-next-r').textContent=PS.aiR;
+  if(acceptedAI){
+    const curSet=S.session.exercises[PS.ei].sets[PS.si];
+    const d=PS.aiW-curSet.w;
+    $('ps-next-d').textContent = d>0?`↑ +${d}kg · 已接受`:d<0?`↓ ${d}kg · 已接受`:`保持重量 · 已接受`;
+    $('ps-next-d').className='d '+(d>0?'up':d<0?'down':'');
+  } else {
+    $('ps-next-d').textContent='未接受：下组沿用原计划';
+    $('ps-next-d').className='d';
+  }
+
+  // 教练文本：模拟打字机效果
+  $('ai-typing').style.display='flex';
+  $('ai-coach-body').innerHTML='<p style="color:var(--text-3)">喵喵教练正在为你分析…</p>';
+  setTimeout(()=>{
+    $('ai-typing').style.display='none';
+    $('ai-coach-body').innerHTML=PS.aiCoachText || '<p>状态分析完成，继续保持。</p>';
+  }, 700);
+
+  // 换按钮：确认后只剩一个"结束休息"主按钮
+  if(acceptedAI){
+    $('ps-keep').textContent='提前结束休息 →';
+  } else {
+    $('ps-keep').textContent='提前结束休息 →';
+  }
+}
+
 function psKeepOriginal(){
+  // 在"已确认"态下该按钮变成"提前结束休息"
+  if($('ps-sheet').classList.contains('confirmed')){
+    psFinish();
+    return;
+  }
+  // 首次点击：保存 eff/rir，切换到确认态
+  if(PS.eff===null || PS.rir===null){
+    toast('先选动作标准程度和 RIR');
+    return;
+  }
   const s=S.session.exercises[PS.ei].sets[PS.si];
   if(s){s.rir=PS.rir;s.eff=PS.eff}
   renderSession();
-  toast('已保留原计划');
-  // 保留弹窗和倒计时，让用户继续看休息时间
+  switchToConfirmedState(false);
 }
 
 function psAcceptAI(){
@@ -1246,11 +1520,14 @@ function psAcceptAI(){
     ex.aiNext={si:nextSi, w:PS.aiW, r:PS.aiR};
   }
   renderSession();
+  switchToConfirmedState(true);
   toast(`✓ 下组已更新为 ${PS.aiW}kg × ${PS.aiR}`);
-  // 按钮变成已接受状态，但保留弹窗
-  $('ps-accept').classList.add('done');
-  $('ps-accept').textContent='✓ 已接受，休息中…';
-  $('ps-accept').disabled=true;
+}
+
+/* 点"修改"展开折叠的输入区 */
+function psReopenInputs(){
+  $('ps-sheet').classList.remove('confirmed');
+  toast('已打开修改');
 }
 
 /* ============== rest ============== */
