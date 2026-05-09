@@ -209,6 +209,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .set-row .cell{height:56px;background:var(--bg);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-variant-numeric:tabular-nums}
 .set-row .cell .u{position:absolute;top:7px;left:11px;font-size:11px;color:var(--text-3);font-weight:500}
 .set-row .cell .v{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-top:8px}
+.set-row .cell input.v{width:100%;background:transparent;border:none;text-align:center;outline:none;padding:0;-moz-appearance:textfield;font-family:inherit;font-variant-numeric:tabular-nums}
+.set-row .cell input.v::-webkit-outer-spin-button,.set-row .cell input.v::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.set-row .cell.edit{background:var(--card);border:1.5px solid var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+.set-row .cell.edit input.v{color:var(--brand)}
+.set-row .cell.edit.ai{border-color:var(--ai);box-shadow:0 0 0 4px var(--ai-soft)}
+.set-row .cell.edit.ai input.v{color:var(--ai)}
 .set-row .cell.ph .v{color:var(--text-4);font-weight:400}
 .set-row .cell.ai{background:var(--ai-soft);border:1px dashed var(--ai-line)}
 .set-row .cell.ai .v{color:var(--ai)}
@@ -1050,20 +1056,22 @@ function renderSession(){
         const badge=s.warm?'<div class="badge warm">热</div>':`<div class="badge">${si+1}</div>`;
         setsHtml+=`<div class="set-row done">
           ${badge}
-          <div class="cell"><span class="u">kg</span><span class="v">${s.w}</span></div>
-          <div class="cell"><span class="u">次</span><span class="v">${s.r}</span></div>
+          <div class="cell" onclick="editCell(event,${ei},${si},'w')"><span class="u">kg</span><input class="v" type="number" inputmode="decimal" step="2.5" value="${s.w}" data-ei="${ei}" data-si="${si}" data-k="w" onclick="event.stopPropagation();this.select()" onfocus="onCellFocus(this)" onblur="onCellBlur(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          <div class="cell" onclick="editCell(event,${ei},${si},'r')"><span class="u">次</span><input class="v" type="number" inputmode="numeric" step="1" value="${s.r}" data-ei="${ei}" data-si="${si}" data-k="r" onclick="event.stopPropagation();this.select()" onfocus="onCellFocus(this)" onblur="onCellBlur(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
           <div class="cell tick done"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
           <div class="more" onclick="toast('更多操作')">⋯</div>
         </div>`;
       }else{
         const isNext=si===nextIdx;
-        const wVal=isNext?suggestion.w:'—';
-        const rVal=isNext?suggestion.r:'—';
+        const wVal=isNext?suggestion.w:'';
+        const rVal=isNext?suggestion.r:'';
         const cellCls=isNext?'ai':'ph';
+        const phWDisp=isNext?`<input class="v" type="number" inputmode="decimal" step="2.5" value="${wVal}" data-ei="${ei}" data-si="${si}" data-k="w" onclick="event.stopPropagation();this.select()" onfocus="onCellFocus(this)" onblur="onCellBlur(this)" onkeydown="if(event.key==='Enter')this.blur()">`:`<span class="v">—</span>`;
+        const phRDisp=isNext?`<input class="v" type="number" inputmode="numeric" step="1" value="${rVal}" data-ei="${ei}" data-si="${si}" data-k="r" onclick="event.stopPropagation();this.select()" onfocus="onCellFocus(this)" onblur="onCellBlur(this)" onkeydown="if(event.key==='Enter')this.blur()">`:`<span class="v">—</span>`;
         setsHtml+=`<div class="set-row">
           <div class="badge">${si+1}</div>
-          <div class="cell ${cellCls}"><span class="u">kg</span><span class="v">${wVal}</span></div>
-          <div class="cell ${cellCls}"><span class="u">次</span><span class="v">${rVal}</span></div>
+          <div class="cell ${cellCls}" ${isNext?`onclick="editCell(event,${ei},${si},'w')"`:''}><span class="u">kg</span>${phWDisp}</div>
+          <div class="cell ${cellCls}" ${isNext?`onclick="editCell(event,${ei},${si},'r')"`:''}><span class="u">次</span>${phRDisp}</div>
           <div class="cell tick" onclick="openInput(${ei},${si})"><svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg></div>
           <div class="more" onclick="toast('更多操作')">⋯</div>
         </div>`;
@@ -1097,7 +1105,46 @@ function renderSession(){
   $('sess-vol-total').textContent=Math.round(totalVol);
 }
 
-/* ============== AI suggestion ============== */
+/* ============== 组行内 kg/次 直接编辑 ============== */
+function editCell(evt, ei, si, k){
+  // 找到 input 并聚焦（点击 cell 任意位置都能触发）
+  const cell = evt.currentTarget;
+  const input = cell.querySelector('input.v');
+  if(input){
+    input.focus();
+    input.select();
+  }
+}
+function onCellFocus(el){
+  el.closest('.cell').classList.add('edit');
+}
+function onCellBlur(el){
+  const cell = el.closest('.cell');
+  cell.classList.remove('edit');
+  const ei = parseInt(el.dataset.ei);
+  const si = parseInt(el.dataset.si);
+  const k = el.dataset.k;
+  const val = parseFloat(el.value) || 0;
+  const ex = S.session.exercises[ei];
+  if(ex.sets[si]){
+    // 已有组：直接改
+    const cleanVal = k==='r' ? Math.max(0, Math.round(val)) : Math.max(0, val);
+    if(ex.sets[si][k] !== cleanVal){
+      ex.sets[si][k] = cleanVal;
+      renderSession();
+      toast(`已改为 ${cleanVal}${k==='w'?'kg':'次'}`);
+    }
+  } else {
+    // 未完成组（AI 预览位）：修改 aiNext 里的建议值
+    const cleanVal = k==='r' ? Math.max(0, Math.round(val)) : Math.max(0, val);
+    if(!ex.aiNext) ex.aiNext = {si};
+    ex.aiNext.si = si;
+    if(k==='w') ex.aiNext.w = cleanVal;
+    else ex.aiNext.r = cleanVal;
+    renderSession();
+  }
+}
+
 function computeSuggest(ex){
   // 如果上一组接受了 AI 建议并指向某个未完成 set，优先使用
   const nextIdx=ex.sets.findIndex(s=>!s);
