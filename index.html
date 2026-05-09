@@ -302,6 +302,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-set-line .nm{font-weight:600;color:var(--text)}
 .ps-set-line .val{margin-left:auto;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
 .ps-set-line .val b{font-size:15px}
+/* 确认后不再需要展示当前组信息 */
+.ps-sheet.confirmed .ps-set-line{display:none}
 
 .ps-label{font-size:12px;color:var(--text-3);margin:12px 0 8px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
 .ps-label .req{color:var(--danger);font-size:14px}
@@ -310,14 +312,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-inputs{transition:all .35s cubic-bezier(.22,.61,.36,1);overflow:hidden;max-height:600px;opacity:1}
 .ps-sheet.confirmed .ps-inputs{max-height:0;opacity:0;margin:0;padding:0;pointer-events:none}
 
-/* 确认后的折叠摘要条 */
-.ps-summary{display:none;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 14px;margin-top:12px;cursor:pointer;transition:background .15s}
+/* 确认后的折叠摘要条（小一点、不抢眼） */
+.ps-summary{display:none;align-items:center;gap:6px;padding:4px 2px 2px;margin-top:8px;cursor:pointer;font-size:11px;color:var(--text-3)}
 .ps-sheet.confirmed .ps-summary{display:flex}
-.ps-summary:active{background:var(--border)}
-.ps-summary .ico{font-size:16px;line-height:1;flex-shrink:0}
-.ps-summary .t{flex:1;font-size:13px;color:var(--text-2);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ps-summary .t b{color:var(--text);font-weight:700}
-.ps-summary .edit{font-size:12px;color:var(--brand);font-weight:600;flex-shrink:0}
+.ps-summary:active{opacity:.6}
+.ps-summary .ico{font-size:12px;line-height:1;flex-shrink:0;opacity:.7}
+.ps-summary .t{flex:1;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-3)}
+.ps-summary .t b{color:var(--text-2);font-weight:600}
+.ps-summary .edit{font-size:11px;color:var(--brand);font-weight:500;flex-shrink:0;opacity:.8}
 
 .ps-effort{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ps-effort .o{background:var(--bg);border:1.5px solid transparent;border-radius:12px;padding:12px 6px 10px;text-align:center;cursor:pointer;transition:all .15s}
@@ -411,10 +413,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ps-actions .accept.done{background:var(--accent);box-shadow:0 4px 12px var(--accent-soft)}
 .ps-actions .accept:active,.ps-actions .keep:active{opacity:.85}
 .ps-actions .accept[disabled]{opacity:.4;box-shadow:none;pointer-events:none}
-/* 确认后按钮样式简化 */
-.ps-sheet.confirmed .ps-actions{margin-top:10px}
-.ps-sheet.confirmed .ps-actions .accept{display:none}
-.ps-sheet.confirmed .ps-actions .keep{background:var(--brand);color:#fff;flex:1;font-weight:700;padding:14px}
+/* 确认后的按钮：所有主按钮隐藏，只留一个不起眼的文字链 */
+.ps-sheet.confirmed .ps-actions{display:none}
+.ps-skip-link{display:none;text-align:center;margin-top:14px;padding:8px 0 2px}
+.ps-sheet.confirmed .ps-skip-link{display:block}
+.ps-skip-link button{background:transparent;border:none;color:var(--text-3);font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;opacity:.7;transition:opacity .15s}
+.ps-skip-link button:active{opacity:1;color:var(--text-2)}
 
 /* ===== FAB 悬浮球 ===== */
 .ps-fab{position:fixed;right:14px;bottom:calc(var(--safe-bot) + 86px);width:60px;height:60px;border-radius:50%;background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08);z-index:49;cursor:pointer;opacity:0;transform:scale(.5) translateY(20px);pointer-events:none;transition:transform .28s cubic-bezier(.22,1.4,.36,1),opacity .2s;display:flex;align-items:center;justify-content:center}
@@ -849,10 +853,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       </div>
     </div>
 
-    <!-- 确认后折叠摘要（点击展开可改） -->
+    <!-- 确认后折叠摘要（点击展开可改，小字版） -->
     <div class="ps-summary" id="ps-summary" onclick="psReopenInputs()">
       <div class="ico" id="ps-sum-emo">🎯</div>
-      <div class="t" id="ps-sum-text">已标记：<b>非常标准</b> · 还能做 <b>2</b> 个</div>
+      <div class="t" id="ps-sum-text">非常标准 · 还能做 2 个</div>
       <div class="edit">修改 ›</div>
     </div>
 
@@ -904,6 +908,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="ps-actions">
       <button class="keep" id="ps-keep" onclick="psKeepOriginal()">按原计划</button>
       <button class="accept" id="ps-accept" disabled onclick="psAcceptAI()">接受 AI 建议</button>
+    </div>
+
+    <!-- 确认后：极简文字链（不显眼，避免误触） -->
+    <div class="ps-skip-link">
+      <button onclick="psFinish()">提前结束休息</button>
     </div>
   </div>
 
@@ -1536,21 +1545,9 @@ function switchToConfirmedState(acceptedAI){
     $('ai-typing').style.display='none';
     $('ai-coach-body').innerHTML=PS.aiCoachText || '<p>状态分析完成，继续保持。</p>';
   }, 700);
-
-  // 换按钮：确认后只剩一个"结束休息"主按钮
-  if(acceptedAI){
-    $('ps-keep').textContent='提前结束休息 →';
-  } else {
-    $('ps-keep').textContent='提前结束休息 →';
-  }
 }
 
 function psKeepOriginal(){
-  // 在"已确认"态下该按钮变成"提前结束休息"
-  if($('ps-sheet').classList.contains('confirmed')){
-    psFinish();
-    return;
-  }
   // 首次点击：保存 eff/rir，切换到确认态
   if(PS.eff===null || PS.rir===null){
     toast('先选动作标准程度和 RIR');
