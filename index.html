@@ -260,6 +260,77 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 .toast{position:fixed;top:calc(var(--safe-top) + 14px);left:50%;transform:translateX(-50%) translateY(-80px);background:rgba(60,60,67,.95);color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;font-weight:500;transition:transform .25s;z-index:60;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== Post-set modal (打勾后的倒计时+反馈+AI建议弹窗) ===== */
+.ps-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:50;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ps-mask.show{opacity:1;pointer-events:auto}
+.ps-sheet{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--card);border-radius:22px 22px 0 0;padding:14px 20px calc(var(--safe-bot) + 18px);transform:translateY(110%);transition:transform .32s cubic-bezier(.22,.61,.36,1);z-index:51;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ps-sheet.show{transform:translateY(0)}
+.ps-sheet .grab{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 8px}
+
+.ps-timer-row{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 14px;border-bottom:.5px solid var(--border);margin-bottom:14px}
+.ps-timer-row .left{display:flex;align-items:center;gap:12px}
+.ps-timer-row .ring{width:52px;height:52px;position:relative}
+.ps-timer-row .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ps-timer-row .ring .trk{fill:none;stroke:var(--border);stroke-width:4}
+.ps-timer-row .ring .fll{fill:none;stroke:var(--brand);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ps-timer-row .ring.ai .fll{stroke:var(--ai)}
+.ps-timer-row .ring .inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.ps-timer-row .txt .lbl{font-size:11px;color:var(--text-3);letter-spacing:1px;font-weight:600;text-transform:uppercase;margin-bottom:2px}
+.ps-timer-row .txt .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.ps-timer-row .txt .val .tot{font-size:13px;color:var(--text-3);font-weight:500;margin-left:3px}
+.ps-timer-row .ctls{display:flex;gap:6px;align-items:center}
+.ps-timer-row .ctls button{background:var(--bg);border:none;color:var(--text-2);font-size:12px;font-weight:600;padding:8px 10px;border-radius:8px;min-width:44px}
+
+.ps-set-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ps-set-head .pill{background:var(--accent-soft);color:var(--accent);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.ps-set-head .nm{font-size:14px;color:var(--text-2);font-weight:600}
+.ps-set-head .val{font-size:14px;color:var(--text);font-weight:700;margin-left:auto;font-variant-numeric:tabular-nums}
+.ps-set-head .val b{font-size:16px}
+
+.ps-label{font-size:12px;color:var(--text-3);margin:14px 0 8px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:4px}
+.ps-label .req{color:var(--danger);font-size:14px}
+
+.ps-effort{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ps-effort .o{background:var(--bg);border:1.5px solid transparent;border-radius:12px;padding:14px 8px 12px;text-align:center;cursor:pointer;transition:all .15s}
+.ps-effort .o .emo{font-size:28px;line-height:1;margin-bottom:6px}
+.ps-effort .o .t{font-size:13px;font-weight:700;color:var(--text)}
+.ps-effort .o .s{font-size:10px;color:var(--text-3);margin-top:2px;font-weight:500}
+.ps-effort .o.sel{background:var(--brand-soft);border-color:var(--brand)}
+.ps-effort .o.sel .t{color:var(--brand)}
+
+.ps-rir{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ps-rir .o{background:var(--bg);border:1.5px solid transparent;border-radius:10px;padding:12px 0;text-align:center;cursor:pointer;transition:all .15s}
+.ps-rir .o .n{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.ps-rir .o .s{font-size:10px;color:var(--text-3);margin-top:4px;font-weight:500}
+.ps-rir .o.sel{background:var(--brand-soft);border-color:var(--brand)}
+.ps-rir .o.sel .n{color:var(--brand)}
+
+.ps-ai{background:linear-gradient(135deg,var(--ai-soft),#ff6b3506);border:1px solid var(--ai-line);border-radius:16px;padding:14px 14px 12px;margin-top:16px;position:relative;opacity:.55;pointer-events:none;transition:opacity .25s}
+.ps-ai.ready{opacity:1;pointer-events:auto}
+.ps-ai .hd{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.ps-ai .hd .dot{width:7px;height:7px;border-radius:50%;background:var(--ai);animation:pulse 1.4s infinite}
+.ps-ai .hd .t{font-size:11px;font-weight:700;color:var(--ai);letter-spacing:1px;text-transform:uppercase}
+.ps-ai .hd .loading{font-size:11px;color:var(--text-3);margin-left:auto;font-weight:500}
+
+.ps-ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ps-ai-cell{background:var(--card);border-radius:10px;padding:10px 12px}
+.ps-ai-cell .l{font-size:10px;color:var(--text-3);letter-spacing:.3px;margin-bottom:3px;font-weight:600}
+.ps-ai-cell .v{font-size:20px;font-weight:700;color:var(--ai);letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.ps-ai-cell .v .u{font-size:11px;color:var(--text-3);font-weight:500;margin-left:2px}
+.ps-ai-cell .d{font-size:11px;color:var(--text-3);margin-top:2px}
+.ps-ai-cell .d.up{color:var(--accent)}
+.ps-ai-cell .d.down{color:var(--danger)}
+
+.ps-ai-reason{font-size:12px;color:var(--text-2);line-height:1.5;padding-top:8px;border-top:1px dashed var(--ai-line)}
+.ps-ai-reason b{color:var(--ai)}
+
+.ps-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;margin-top:14px}
+.ps-actions button{border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;cursor:pointer}
+.ps-actions .keep{background:var(--bg);color:var(--text-2)}
+.ps-actions .accept{background:var(--brand);color:#fff;box-shadow:0 4px 12px var(--brand-soft)}
+.ps-actions .accept:active,.ps-actions .keep:active{opacity:.85}
+.ps-actions .accept[disabled]{opacity:.4;box-shadow:none}
 </style>
 </head>
 <body>
@@ -610,6 +681,80 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </div>
   </div>
 
+  <!-- ============= Post-set Sheet（勾选后弹窗：倒计时+反馈+AI 建议） ============= -->
+  <div class="ps-mask" id="ps-mask" onclick="psCloseMaybe()"></div>
+  <div class="ps-sheet" id="ps-sheet">
+    <div class="grab"></div>
+
+    <div class="ps-timer-row">
+      <div class="left">
+        <div class="ring" id="ps-ring">
+          <svg viewBox="0 0 40 40">
+            <circle class="trk" cx="20" cy="20" r="17"/>
+            <circle class="fll" id="ps-ring-fill" cx="20" cy="20" r="17" stroke-dasharray="106.8" stroke-dashoffset="0"/>
+          </svg>
+          <div class="inner" id="ps-ring-text">1:30</div>
+        </div>
+        <div class="txt">
+          <div class="lbl">组间休息</div>
+          <div class="val"><span id="ps-left-time">1:30</span><span class="tot"> / <span id="ps-total-time">1:30</span></span></div>
+        </div>
+      </div>
+      <div class="ctls">
+        <button onclick="psRestAdd(-15)">−15s</button>
+        <button onclick="psRestAdd(15)">+15s</button>
+      </div>
+    </div>
+
+    <div class="ps-set-head">
+      <div class="pill">✓ 已记录</div>
+      <div class="nm" id="ps-set-label">第 4 组 · 杠铃卧推</div>
+      <div class="val"><b id="ps-set-w">100</b>kg × <b id="ps-set-r">2</b></div>
+    </div>
+
+    <div class="ps-label">动作吃力程度 <span class="req">*</span></div>
+    <div class="ps-effort" id="ps-effort">
+      <div class="o" data-eff="1"><div class="emo">😌</div><div class="t">轻松</div><div class="s">还能加重</div></div>
+      <div class="o" data-eff="2"><div class="emo">😐</div><div class="t">正常</div><div class="s">有挑战</div></div>
+      <div class="o" data-eff="3"><div class="emo">😤</div><div class="t">力竭</div><div class="s">做不动了</div></div>
+    </div>
+
+    <div class="ps-label">感觉还能再做几个 <span class="req">*</span></div>
+    <div class="ps-rir" id="ps-rir">
+      <div class="o" data-rir="0"><div class="n">0</div><div class="s">一个都不</div></div>
+      <div class="o" data-rir="1"><div class="n">1</div><div class="s">还能1个</div></div>
+      <div class="o" data-rir="2"><div class="n">2</div><div class="s">还有余</div></div>
+      <div class="o" data-rir="3"><div class="n">3</div><div class="s">轻松</div></div>
+      <div class="o" data-rir="4"><div class="n">4+</div><div class="s">太轻了</div></div>
+    </div>
+
+    <div class="ps-ai" id="ps-ai">
+      <div class="hd">
+        <div class="dot"></div>
+        <div class="t">AI 实时建议</div>
+        <div class="loading" id="ps-ai-loading">填完上面两项我来算</div>
+      </div>
+      <div class="ps-ai-grid">
+        <div class="ps-ai-cell">
+          <div class="l">建议休息</div>
+          <div class="v"><span id="ps-ai-rest">—</span><span class="u">s</span></div>
+          <div class="d" id="ps-ai-rest-d">—</div>
+        </div>
+        <div class="ps-ai-cell">
+          <div class="l">下组重量 × 次数</div>
+          <div class="v"><span id="ps-ai-nw">—</span><span class="u">kg × <span id="ps-ai-nr">—</span></span></div>
+          <div class="d" id="ps-ai-nw-d">—</div>
+        </div>
+      </div>
+      <div class="ps-ai-reason" id="ps-ai-reason">填写完毕后，AI 会根据你的表现给出个性化建议。</div>
+    </div>
+
+    <div class="ps-actions">
+      <button class="keep" onclick="psKeepOriginal()">按原计划</button>
+      <button class="accept" id="ps-accept" disabled onclick="psAcceptAI()">接受 AI 建议</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast">OK</div>
 </div>
 
@@ -795,6 +940,11 @@ function renderSession(){
 
 /* ============== AI suggestion ============== */
 function computeSuggest(ex){
+  // 如果上一组接受了 AI 建议并指向某个未完成 set，优先使用
+  const nextIdx=ex.sets.findIndex(s=>!s);
+  if(ex.aiNext && ex.aiNext.si===nextIdx){
+    return {w:ex.aiNext.w, r:ex.aiNext.r};
+  }
   const done=ex.sets.filter(s=>s);
   if(done.length===0){
     const h=ex.history;
@@ -816,16 +966,12 @@ function addSet(ei){
 
 /* ============== input sheet ============== */
 function openInput(ei,si){
+  /* 点击 ✓ 打勾：立即用 AI 建议值保存本组，然后打开倒计时+反馈+AI 弹窗 */
   const ex=S.session.exercises[ei];
   const sug=computeSuggest(ex);
-  S.inputCtx={ei,si};
-  $('is-w').value=sug.w;
-  $('is-r').value=sug.r;
-  S.rir=1;
-  document.querySelectorAll('#rir5 .o').forEach(o=>o.classList.toggle('sel',o.dataset.rir==='1'));
-  $('is-hint').innerHTML=`${ex.name} · 第 ${si+1} 组 · AI 建议 <b>${sug.w}kg × ${sug.r}</b>`;
-  $('sheet-input').classList.add('show');
-  $('sheet-mask').classList.add('show');
+  ex.sets[si]={w:sug.w, r:sug.r, rir:null, eff:null};
+  renderSession();
+  openPostSet(ei,si);
 }
 function closeSheets(){
   $('sheet-input').classList.remove('show');
@@ -846,8 +992,205 @@ function submitIS(){
   S.session.exercises[ei].sets[si]={w,r,rir:S.rir};
   closeSheets();
   renderSession();
-  toast(`✓ 第 ${si+1} 组已保存`);
-  setTimeout(()=>openRest(),400);
+}
+
+/* ============== Post-set modal: 打勾后弹窗 ============== */
+const PS={ei:null,si:null,eff:null,rir:null,totalRest:90,leftRest:90,timer:null,aiRest:null,aiW:null,aiR:null,aiReason:''};
+
+function openPostSet(ei,si){
+  PS.ei=ei;PS.si=si;PS.eff=null;PS.rir=null;
+  PS.totalRest=90;PS.leftRest=90;
+  const ex=S.session.exercises[ei];
+  const s=ex.sets[si];
+  $('ps-set-label').textContent=`第 ${si+1} 组 · ${ex.name}`;
+  $('ps-set-w').textContent=s.w;
+  $('ps-set-r').textContent=s.r;
+
+  document.querySelectorAll('#ps-effort .o').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('#ps-rir .o').forEach(o=>o.classList.remove('sel'));
+  $('ps-ai').classList.remove('ready');
+  $('ps-accept').disabled=true;
+  $('ps-ai-loading').textContent='填完上面两项我来算';
+  $('ps-ai-rest').textContent='—';
+  $('ps-ai-nw').textContent='—';
+  $('ps-ai-nr').textContent='—';
+  $('ps-ai-rest-d').textContent='—';$('ps-ai-rest-d').className='d';
+  $('ps-ai-nw-d').textContent='—';$('ps-ai-nw-d').className='d';
+  $('ps-ai-reason').innerHTML='填写完毕后，AI 会根据你的表现给出个性化建议。';
+
+  updatePSTime();
+  $('ps-mask').classList.add('show');
+  $('ps-sheet').classList.add('show');
+
+  if(PS.timer)clearInterval(PS.timer);
+  PS.timer=setInterval(()=>{
+    PS.leftRest--;
+    updatePSTime();
+    if(PS.leftRest<=0){closePostSet(true)}
+  },1000);
+}
+
+function updatePSTime(){
+  const m=Math.floor(Math.max(0,PS.leftRest)/60);
+  const sec=String(Math.max(0,PS.leftRest)%60).padStart(2,'0');
+  const disp=`${m}:${sec}`;
+  $('ps-ring-text').textContent=disp;
+  $('ps-left-time').textContent=disp;
+  const tm=Math.floor(PS.totalRest/60);
+  const ts=String(PS.totalRest%60).padStart(2,'0');
+  $('ps-total-time').textContent=`${tm}:${ts}`;
+  const circ=106.8;
+  const ratio=Math.max(0,PS.leftRest)/PS.totalRest;
+  $('ps-ring-fill').style.strokeDashoffset=circ*(1-ratio);
+}
+
+function psRestAdd(d){
+  PS.leftRest=Math.max(5,PS.leftRest+d);
+  PS.totalRest=Math.max(5,PS.totalRest+d);
+  updatePSTime();
+  toast(d>0?`休息 +${d}s`:`休息 ${d}s`);
+}
+
+function psCloseMaybe(){
+  // 点背景不关闭，避免误操作；必须用按钮
+  toast('请选择「按原计划」或「接受 AI 建议」');
+}
+
+function closePostSet(auto){
+  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
+  $('ps-mask').classList.remove('show');
+  $('ps-sheet').classList.remove('show');
+  // 保存当前填写的 eff/rir 到 set（如果用户填了）
+  if(PS.eff!==null || PS.rir!==null){
+    const s=S.session.exercises[PS.ei].sets[PS.si];
+    if(s){s.rir=PS.rir;s.eff=PS.eff}
+    renderSession();
+  }
+  if(auto)toast('倒计时结束，开始下一组');
+}
+
+/* ============== 点选 effort / rir ============== */
+document.querySelectorAll('#ps-effort .o').forEach(o=>o.addEventListener('click',()=>{
+  document.querySelectorAll('#ps-effort .o').forEach(x=>x.classList.remove('sel'));
+  o.classList.add('sel');
+  PS.eff=parseInt(o.dataset.eff);
+  recomputeAI();
+}));
+document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()=>{
+  document.querySelectorAll('#ps-rir .o').forEach(x=>x.classList.remove('sel'));
+  o.classList.add('sel');
+  PS.rir=parseInt(o.dataset.rir);
+  recomputeAI();
+}));
+
+/* ============== AI 实时重算（核心算法） ============== */
+function recomputeAI(){
+  if(PS.eff===null || PS.rir===null){
+    $('ps-ai-loading').textContent='再填一项就能算';
+    return;
+  }
+  $('ps-ai-loading').textContent='AI 计算中…';
+
+  setTimeout(()=>{
+    const ex=S.session.exercises[PS.ei];
+    const s=ex.sets[PS.si];
+    const tgt=ex.target.r;
+    const completion=s.r/tgt;
+
+    // ===== 决策：下组重量 =====
+    let nw=s.w, nr=tgt, wDelta=0, reason='';
+    if(completion < 0.8){
+      nw=Math.max(10, Math.round(s.w*0.925*2)/2);
+      wDelta=nw-s.w;
+      reason=`上组只做到 ${s.r}/${tgt} 次（<80%），<b>减重 ${Math.abs(wDelta)}kg</b> 保证动作质量`;
+    } else if(PS.eff===1 && PS.rir>=3){
+      nw=Math.round((s.w+5)*2)/2;wDelta=5;
+      reason=`轻松完成且还剩 ${PS.rir}+ 次储备，<b>直接加 5kg</b>，别浪费状态`;
+    } else if(PS.eff===1 && PS.rir===2){
+      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
+      reason=`完成很轻松，<b>加 2.5kg</b> 继续渐进超负荷`;
+    } else if(PS.eff===2 && PS.rir>=2){
+      nw=Math.round((s.w+2.5)*2)/2;wDelta=2.5;
+      reason=`状态正常、还有余力，<b>小幅加 2.5kg</b>`;
+    } else if(PS.eff===2 && PS.rir<=1){
+      nw=s.w;wDelta=0;
+      reason=`状态正常但接近力竭，<b>保持 ${s.w}kg</b>，追求相同次数`;
+    } else if(PS.eff===3){
+      nw=s.w;wDelta=0;
+      if(PS.rir===0)reason=`力竭到 RIR 0，<b>保持 ${s.w}kg</b>，下次再冲`;
+      else reason=`已接近力竭，<b>保持重量</b>`;
+    } else {
+      nw=Math.round((s.w+1.25)*2)/2;wDelta=1.25;
+      reason=`状态尚可，<b>小增 1.25kg</b>`;
+    }
+
+    // ===== 决策：休息时长 =====
+    let rest=90;
+    if(PS.eff===3 || PS.rir===0) rest=150;           // 力竭 → 长休
+    else if(PS.eff===3 || PS.rir<=1) rest=120;
+    else if(PS.eff===2 && PS.rir===2) rest=90;
+    else if(PS.eff===1 && PS.rir>=3) rest=60;        // 太轻 → 短休加强密度
+    else rest=90;
+    if(s.w>=80) rest+=15;                             // 绝对重量大加 15s
+
+    // 更新 UI
+    PS.aiRest=rest;PS.aiW=nw;PS.aiR=nr;PS.aiReason=reason;
+
+    $('ps-ai').classList.add('ready');
+    $('ps-ai-loading').textContent='✓ 已分析';
+    $('ps-ai-rest').textContent=rest;
+    $('ps-ai-nw').textContent=nw;
+    $('ps-ai-nr').textContent=nr;
+
+    const restDelta=rest-90;
+    if(restDelta>0){$('ps-ai-rest-d').textContent=`+${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d down'}
+    else if(restDelta<0){$('ps-ai-rest-d').textContent=`${restDelta}s vs 默认`;$('ps-ai-rest-d').className='d up'}
+    else{$('ps-ai-rest-d').textContent='标准时长';$('ps-ai-rest-d').className='d'}
+
+    if(wDelta>0){$('ps-ai-nw-d').textContent=`↑ +${wDelta}kg`;$('ps-ai-nw-d').className='d up'}
+    else if(wDelta<0){$('ps-ai-nw-d').textContent=`↓ ${wDelta}kg`;$('ps-ai-nw-d').className='d down'}
+    else{$('ps-ai-nw-d').textContent=`保持 ${s.w}kg`;$('ps-ai-nw-d').className='d'}
+
+    $('ps-ai-reason').innerHTML=reason;
+    $('ps-accept').disabled=false;
+
+    // 同步更新倒计时总时长为 AI 建议（保留已流逝部分）
+    const elapsed=PS.totalRest-PS.leftRest;
+    PS.totalRest=rest;
+    PS.leftRest=Math.max(5,rest-elapsed);
+    // 换成 AI 色环
+    $('ps-ring').classList.add('ai');
+    updatePSTime();
+  },450);
+}
+
+/* ============== 确认按钮 ============== */
+function psKeepOriginal(){
+  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
+  const s=S.session.exercises[PS.ei].sets[PS.si];
+  if(s){s.rir=PS.rir;s.eff=PS.eff}
+  renderSession();
+  $('ps-mask').classList.remove('show');
+  $('ps-sheet').classList.remove('show');
+  $('ps-ring').classList.remove('ai');
+  toast('已保留原计划');
+}
+
+function psAcceptAI(){
+  if(PS.timer){clearInterval(PS.timer);PS.timer=null}
+  const ex=S.session.exercises[PS.ei];
+  const s=ex.sets[PS.si];
+  if(s){s.rir=PS.rir;s.eff=PS.eff}
+  // 把下一组替换为 AI 建议
+  const nextSi=PS.si+1;
+  if(nextSi < ex.sets.length && !ex.sets[nextSi]){
+    ex.aiNext={si:nextSi, w:PS.aiW, r:PS.aiR};
+  }
+  renderSession();
+  $('ps-mask').classList.remove('show');
+  $('ps-sheet').classList.remove('show');
+  $('ps-ring').classList.remove('ai');
+  toast(`✓ 下组已更新为 ${PS.aiW}kg × ${PS.aiR}`);
 }
 
 /* ============== rest ============== */
