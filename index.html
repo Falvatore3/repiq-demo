@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>RepIQ · 真 AI 版 v0.8.1</title>
+<title>RepIQ · 真 AI 版 v0.8.2</title>
 <script>
 // 版本号检测，URL 不带 v 参数时刷新并加上（破缓存）
 (function(){
@@ -740,9 +740,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         </div>
       </div>
       <div class="sub">
-        <div class="title-edit" onclick="toast('版本 v0.8.1 · 点喵喵AI接入真AI')">
+        <div class="title-edit" onclick="toast('版本 v0.8.2 · 仅 AI 模式（无规则降级）')">
           <span class="pen">✎</span><b id="sess-title">胸</b>
-          <span style="font-size:10px;color:var(--text-3);margin-left:6px;font-weight:500">v0.8.1</span>
+          <span style="font-size:10px;color:var(--text-3);margin-left:6px;font-weight:500">v0.8.2</span>
         </div>
         <div class="stat-right">
           <div class="r1"><span id="sess-sets-done">0</span>/<span id="sess-sets-total">15</span> 组 · <span id="sess-ex-done">0</span>/<span id="sess-ex-total">3</span> 动作</div>
@@ -1436,22 +1436,18 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
 */
 async function generateAIFeedback(ctx){
   const apiKey = getApiKey();
-  console.log('[RepIQ v0.8.1] generateAIFeedback called. Has API key:', !!apiKey);
-  if(apiKey){
-    try {
-      console.log('[RepIQ] 调用真实 Qwen API...');
-      const result = await qwenFeedback(ctx, apiKey);
-      console.log('[RepIQ] ✓ Qwen 返回成功:', result);
-      return result;
-    } catch(e) {
-      console.warn('[RepIQ] ✗ Qwen 调用失败，降级规则引擎:', e);
-      const fallback = ruleBasedFeedback(ctx);
-      fallback.coachText = `<p style="color:var(--text-3);font-size:12px;margin-bottom:8px">⚠ AI 暂时不可用（${e.message||'网络错误'}），使用离线分析</p>` + fallback.coachText;
-      return fallback;
-    }
+  console.log('[RepIQ v0.8.2] generateAIFeedback called. Has API key:', !!apiKey);
+  if(!apiKey){
+    /* 没配 Key：直接抛错，让 UI 提示用户去配置 */
+    const err = new Error('NO_API_KEY');
+    err.userMsg = '未配置 AI Key';
+    throw err;
   }
-  console.log('[RepIQ] 未配置 API Key，使用规则引擎');
-  return ruleBasedFeedback(ctx);
+  console.log('[RepIQ] 调用真实 Qwen API...');
+  /* 失败也直接抛，不再降级到规则引擎 */
+  const result = await qwenFeedback(ctx, apiKey);
+  console.log('[RepIQ] ✓ Qwen 返回成功:', result);
+  return result;
 }
 
 /* ============== API Key 管理 ============== */
@@ -1752,7 +1748,30 @@ async function recomputeAI(){
   };
 
   setTimeout(async ()=>{
-    const result = await generateAIFeedback(ctx);
+    let result;
+    try {
+      result = await generateAIFeedback(ctx);
+    } catch(e) {
+      /* AI 失败：不再降级规则，直接显示错误并禁用 accept 按钮 */
+      console.warn('[RepIQ] AI 调用失败:', e);
+      $('ps-ai').classList.add('ready');
+      $('ps-ai-loading').textContent = '✗ 失败';
+      $('ps-ai-rest').textContent = '—';
+      $('ps-ai-nw').textContent = '—';
+      $('ps-ai-nr').textContent = '—';
+      $('ps-ai-rest-d').textContent = ''; $('ps-ai-rest-d').className = 'd';
+      $('ps-ai-nw-d').textContent = '';   $('ps-ai-nw-d').className = 'd';
+      const isNoKey = (e.userMsg === '未配置 AI Key');
+      const reasonHtml = isNoKey
+        ? `⚠ <b>未配置 AI</b><br>点右上角「💤 喵喵AI」配置 API Key 后才能使用智能建议`
+        : `⚠ <b>AI 调用失败</b>：${(e.message||'').slice(0,80)}<br>检查网络/Key 是否有效，再次填写选项重试`;
+      $('ps-ai-reason').innerHTML = reasonHtml;
+      $('ps-accept').disabled = true;
+      PS.aiRest = null; PS.aiW = null; PS.aiR = null;
+      PS.aiCoachText = `<p style="color:var(--danger)">${reasonHtml}</p>`;
+      return;
+    }
+
     PS.aiRest=result.restSec;
     PS.aiW=result.nextW;
     PS.aiR=result.nextR;
