@@ -7,7 +7,19 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>RepIQ · 真 AI 版 v0.8</title>
+<title>RepIQ · 真 AI 版 v0.8.1</title>
+<script>
+// 版本号检测，URL 不带 v 参数时刷新并加上（破缓存）
+(function(){
+  const ver = 'v081-' + Date.now();
+  const lastVer = localStorage.getItem('repiq_ver');
+  if(lastVer !== 'v0.8.1'){
+    localStorage.setItem('repiq_ver','v0.8.1');
+    // 清 SW 缓存
+    if('caches' in window) caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
+  }
+})();
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 :root{
@@ -728,8 +740,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         </div>
       </div>
       <div class="sub">
-        <div class="title-edit" onclick="toast('编辑标题')">
+        <div class="title-edit" onclick="toast('版本 v0.8.1 · 点喵喵AI接入真AI')">
           <span class="pen">✎</span><b id="sess-title">胸</b>
+          <span style="font-size:10px;color:var(--text-3);margin-left:6px;font-weight:500">v0.8.1</span>
         </div>
         <div class="stat-right">
           <div class="r1"><span id="sess-sets-done">0</span>/<span id="sess-sets-total">15</span> 组 · <span id="sess-ex-done">0</span>/<span id="sess-ex-total">3</span> 动作</div>
@@ -1423,16 +1436,21 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
 */
 async function generateAIFeedback(ctx){
   const apiKey = getApiKey();
+  console.log('[RepIQ v0.8.1] generateAIFeedback called. Has API key:', !!apiKey);
   if(apiKey){
     try {
-      return await qwenFeedback(ctx, apiKey);
+      console.log('[RepIQ] 调用真实 Qwen API...');
+      const result = await qwenFeedback(ctx, apiKey);
+      console.log('[RepIQ] ✓ Qwen 返回成功:', result);
+      return result;
     } catch(e) {
-      console.warn('[AI] Qwen 调用失败，降级规则引擎:', e);
+      console.warn('[RepIQ] ✗ Qwen 调用失败，降级规则引擎:', e);
       const fallback = ruleBasedFeedback(ctx);
-      fallback.coachText = `<p style="color:var(--text-3);font-size:12px;margin-bottom:8px">⚠ AI 暂时不可用，使用离线分析</p>` + fallback.coachText;
+      fallback.coachText = `<p style="color:var(--text-3);font-size:12px;margin-bottom:8px">⚠ AI 暂时不可用（${e.message||'网络错误'}），使用离线分析</p>` + fallback.coachText;
       return fallback;
     }
   }
+  console.log('[RepIQ] 未配置 API Key，使用规则引擎');
   return ruleBasedFeedback(ctx);
 }
 
