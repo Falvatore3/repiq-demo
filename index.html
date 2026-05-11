@@ -7,15 +7,13 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>RepIQ · 真 AI 版 v0.8.2</title>
+<title>RepIQ · DeepSeek 版 v0.9</title>
 <script>
 // 版本号检测，URL 不带 v 参数时刷新并加上（破缓存）
 (function(){
-  const ver = 'v081-' + Date.now();
   const lastVer = localStorage.getItem('repiq_ver');
-  if(lastVer !== 'v0.8.1'){
-    localStorage.setItem('repiq_ver','v0.8.1');
-    // 清 SW 缓存
+  if(lastVer !== 'v0.9'){
+    localStorage.setItem('repiq_ver','v0.9');
     if('caches' in window) caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
   }
 })();
@@ -740,9 +738,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
         </div>
       </div>
       <div class="sub">
-        <div class="title-edit" onclick="toast('版本 v0.8.2 · 仅 AI 模式（无规则降级）')">
+        <div class="title-edit" onclick="toast('版本 v0.9 · DeepSeek AI')">
           <span class="pen">✎</span><b id="sess-title">胸</b>
-          <span style="font-size:10px;color:var(--text-3);margin-left:6px;font-weight:500">v0.8.2</span>
+          <span style="font-size:10px;color:var(--text-3);margin-left:6px;font-weight:500">v0.9</span>
         </div>
         <div class="stat-right">
           <div class="r1"><span id="sess-sets-done">0</span>/<span id="sess-sets-total">15</span> 组 · <span id="sess-ex-done">0</span>/<span id="sess-ex-total">3</span> 动作</div>
@@ -968,8 +966,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="ak-sheet" id="ak-sheet">
     <h3>🐱 喵喵 AI 设置</h3>
     <div class="sub">
-      接入通义千问 Qwen 提供真实 AI 分析<br>
-      <a href="https://bailian.console.aliyun.com/?apiKey=1#/api-key" target="_blank">点这里免费申请 API Key ›</a>
+      接入 DeepSeek 提供真实 AI 分析<br>
+      <a href="https://platform.deepseek.com/api_keys" target="_blank">点这里免费申请 API Key ›</a>
     </div>
 
     <div class="status" id="ak-status">
@@ -985,9 +983,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="field">
       <label>模型</label>
       <select id="ak-model">
-        <option value="qwen-turbo">qwen-turbo · 最快 · 最便宜（推荐）</option>
-        <option value="qwen-plus">qwen-plus · 平衡</option>
-        <option value="qwen-max">qwen-max · 最强 · 最慢</option>
+        <option value="deepseek-chat">deepseek-chat · 快速（推荐）</option>
+        <option value="deepseek-reasoner">deepseek-reasoner · 深度推理（慢 10-30s）</option>
       </select>
     </div>
 
@@ -1436,29 +1433,29 @@ document.querySelectorAll('#ps-rir .o').forEach(o=>o.addEventListener('click',()
 */
 async function generateAIFeedback(ctx){
   const apiKey = getApiKey();
-  console.log('[RepIQ v0.8.2] generateAIFeedback called. Has API key:', !!apiKey);
+  console.log('[RepIQ v0.9] generateAIFeedback called. Has API key:', !!apiKey);
   if(!apiKey){
     /* 没配 Key：直接抛错，让 UI 提示用户去配置 */
     const err = new Error('NO_API_KEY');
     err.userMsg = '未配置 AI Key';
     throw err;
   }
-  console.log('[RepIQ] 调用真实 Qwen API...');
+  console.log('[RepIQ] 调用真实 DeepSeek API...');
   /* 失败也直接抛，不再降级到规则引擎 */
-  const result = await qwenFeedback(ctx, apiKey);
-  console.log('[RepIQ] ✓ Qwen 返回成功:', result);
+  const result = await deepseekFeedback(ctx, apiKey);
+  console.log('[RepIQ] ✓ DeepSeek 返回成功:', result);
   return result;
 }
 
 /* ============== API Key 管理 ============== */
-const AK_STORAGE_KEY = 'repiq_qwen_apikey';
-const AK_MODEL_KEY = 'repiq_qwen_model';
+const AK_STORAGE_KEY = 'repiq_deepseek_apikey';
+const AK_MODEL_KEY = 'repiq_deepseek_model';
 
 function getApiKey(){
   try { return localStorage.getItem(AK_STORAGE_KEY) || '' } catch(e){ return '' }
 }
 function getModel(){
-  try { return localStorage.getItem(AK_MODEL_KEY) || 'qwen-turbo' } catch(e){ return 'qwen-turbo' }
+  try { return localStorage.getItem(AK_MODEL_KEY) || 'deepseek-chat' } catch(e){ return 'deepseek-chat' }
 }
 
 function openApiKeyDialog(){
@@ -1498,13 +1495,13 @@ async function saveApiKey(){
   $('ak-status-text').textContent = '正在测试连接…';
 
   try {
-    await qwenPing(key, model);
+    await deepseekPing(key, model);
     try { localStorage.setItem(AK_STORAGE_KEY, key); localStorage.setItem(AK_MODEL_KEY, model) } catch(e){}
     $('ak-status').className = 'status ok';
     $('ak-status-icon').textContent = '✓';
     $('ak-status-text').textContent = `接入成功（${model}）`;
     updateAiChip();
-    setTimeout(()=>{closeApiKeyDialog();toast('✓ 真 AI 已上线')}, 800);
+    setTimeout(()=>{closeApiKeyDialog();toast('✓ DeepSeek 已上线')}, 800);
   } catch(e) {
     $('ak-status').className = 'status err';
     $('ak-status-icon').textContent = '✗';
@@ -1522,11 +1519,11 @@ function clearApiKey(){
   toast('已切换到离线规则');
 }
 
-/* ============== Qwen API 调用（OpenAI 兼容模式） ============== */
-const QWEN_ENDPOINT = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+/* ============== DeepSeek API 调用（OpenAI 兼容模式） ============== */
+const DS_ENDPOINT = 'https://api.deepseek.com/v1/chat/completions';
 
-async function qwenPing(apiKey, model){
-  const resp = await fetch(QWEN_ENDPOINT, {
+async function deepseekPing(apiKey, model){
+  const resp = await fetch(DS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
     body: JSON.stringify({ model, messages: [{role:'user',content:'Hi'}], max_tokens: 5 })
@@ -1582,21 +1579,25 @@ function buildUserMessage(ctx){
 请按 JSON 格式返回建议。`;
 }
 
-async function qwenFeedback(ctx, apiKey){
+async function deepseekFeedback(ctx, apiKey){
   const model = getModel();
-  const resp = await fetch(QWEN_ENDPOINT, {
+  /* DeepSeek 支持 response_format: json_object，但 deepseek-reasoner 不支持，条件加 */
+  const body = {
+    model,
+    messages: [
+      { role:'system', content: buildSystemPrompt() },
+      { role:'user', content: buildUserMessage(ctx) }
+    ],
+    temperature: 0.6,
+    max_tokens: 800
+  };
+  if(model === 'deepseek-chat'){
+    body.response_format = { type: 'json_object' };
+  }
+  const resp = await fetch(DS_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role:'system', content: buildSystemPrompt() },
-        { role:'user', content: buildUserMessage(ctx) }
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.6,
-      max_tokens: 600
-    })
+    body: JSON.stringify(body)
   });
   if(!resp.ok){
     const txt = await resp.text();
@@ -1608,7 +1609,6 @@ async function qwenFeedback(ctx, apiKey){
   try {
     parsed = JSON.parse(content);
   } catch(e) {
-    // 尝试从 ```json ... ``` 里抽
     const m = content.match(/\{[\s\S]*\}/);
     if(m) parsed = JSON.parse(m[0]);
     else throw new Error('AI 返回格式错误');
